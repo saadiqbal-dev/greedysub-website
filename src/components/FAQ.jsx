@@ -1,4 +1,5 @@
 import React from 'react';
+import StructuredData from './StructuredData';
 
 const faqs = [
   {
@@ -28,18 +29,40 @@ const faqs = [
 ];
 
 export default function FAQ() {
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.a,
+      },
+    })),
+  };
+
   return (
-    <section id="faq">
+    <section id="faq" aria-labelledby="faq-heading">
+      <StructuredData data={faqSchema} />
       <div className="wrap">
         <div className="island reveal">
           <div className="section-tag">FAQ</div>
-          <h2>Quiet answers to fair questions.</h2>
+          <h2 id="faq-heading">Quiet answers to fair questions.</h2>
 
-          <div className="faq">
+          <div className="faq" itemScope itemType="https://schema.org/FAQPage">
             {faqs.map((item, i) => (
-              <details name="faq" key={i}>
-                <summary>{item.q}</summary>
-                <p>{item.a}</p>
+              <details
+                name="faq"
+                key={i}
+                itemScope
+                itemProp="mainEntity"
+                itemType="https://schema.org/Question"
+              >
+                <summary itemProp="name">{item.q}</summary>
+                <div itemScope itemProp="acceptedAnswer" itemType="https://schema.org/Answer">
+                  <p itemProp="text">{item.a}</p>
+                </div>
               </details>
             ))}
           </div>

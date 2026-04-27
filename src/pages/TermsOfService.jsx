@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import SEO from '../components/SEO';
+import StructuredData from '../components/StructuredData';
 
 function SectionNum({ n }) {
   return (
@@ -16,7 +18,7 @@ function SectionNum({ n }) {
 
 function LegalSection({ num, title, children }) {
   return (
-    <div style={{
+    <article style={{
       background: 'white', border: '1px solid var(--line)',
       borderRadius: 'var(--r-lg)', padding: '40px 44px',
       marginBottom: 16, boxShadow: 'var(--shadow-sm)',
@@ -30,7 +32,7 @@ function LegalSection({ num, title, children }) {
         {title}
       </h2>
       {children}
-    </div>
+    </article>
   );
 }
 
@@ -58,11 +60,34 @@ function Ul({ items }) {
 export default function TermsOfService() {
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://greedysub.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Terms of Service', item: 'https://greedysub.com/terms' },
+    ],
+  };
+
   return (
     <>
+      <SEO
+        title="Terms of Service"
+        description="Read the Terms of Service for GreedySub, the subscription tracker and trial reminder Chrome extension. Learn about billing, refunds, privacy, and acceptable use."
+        canonical="https://greedysub.com/terms"
+        keywords="terms of service, terms and conditions, refund policy, billing, Polar.sh, Chrome extension terms"
+      />
+      <StructuredData data={breadcrumbSchema} />
       <Navbar legalPage />
 
       <header style={{ padding: '120px 0 48px', textAlign: 'center' }}>
+        <nav aria-label="Breadcrumb" style={{ marginBottom: 20, fontSize: 13, color: 'var(--ink-3)' }}>
+          <ol style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', justifyContent: 'center', gap: 8 }}>
+            <li><Link to="/" style={{ color: 'var(--ink-3)', textDecoration: 'none' }}>Home</Link></li>
+            <li aria-hidden="true">/</li>
+            <li aria-current="page" style={{ color: 'var(--ink)' }}>Terms of Service</li>
+          </ol>
+        </nav>
         <div className="wrap">
           <span style={{
             display: 'inline-block', fontSize: 12, fontWeight: 500,
@@ -216,7 +241,7 @@ export default function TermsOfService() {
           </LegalSection>
 
           <LegalSection num="11" title="Indemnification">
-            <p style={p}>You agree to indemnify, defend, and hold harmless GreedySub and its affiliates, officers, agents, and employees from and against any claims, liabilities, damages, losses, costs, or expenses (including reasonable attorneys' fees) arising out of or related to:</p>
+            <p style={p}>You agree to indemnify, defend, and hold harmless GreedySub and its affiliates, officers, agents, and employees from and against any claims, liabilities, damages, losses, costs, or expenses (including reasonable attorneys\' fees) arising out of or related to:</p>
             <Ul items={[
               'Your violation of these Terms',
               'Your use or misuse of the Service',

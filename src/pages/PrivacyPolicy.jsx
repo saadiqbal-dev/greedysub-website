@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import SEO from '../components/SEO';
+import StructuredData from '../components/StructuredData';
 
 function SectionNum({ n }) {
   return (
@@ -16,7 +18,7 @@ function SectionNum({ n }) {
 
 function LegalSection({ num, title, children }) {
   return (
-    <div style={{
+    <article style={{
       background: 'white', border: '1px solid var(--line)',
       borderRadius: 'var(--r-lg)', padding: '40px 44px',
       marginBottom: 16, boxShadow: 'var(--shadow-sm)',
@@ -30,7 +32,7 @@ function LegalSection({ num, title, children }) {
         {title}
       </h2>
       {children}
-    </div>
+    </article>
   );
 }
 
@@ -92,11 +94,34 @@ function DataTable({ headers, rows }) {
 export default function PrivacyPolicy() {
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://greedysub.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Privacy Policy', item: 'https://greedysub.com/privacy' },
+    ],
+  };
+
   return (
     <>
+      <SEO
+        title="Privacy Policy"
+        description="GreedySub stores all subscription data locally in your browser. We never send personal data, browsing history, or financial details to our servers. Read our full privacy policy."
+        canonical="https://greedysub.com/privacy"
+        keywords="privacy policy, data protection, GDPR, CCPA, local storage, chrome extension privacy"
+      />
+      <StructuredData data={breadcrumbSchema} />
       <Navbar legalPage />
 
       <header style={{ padding: '120px 0 48px', textAlign: 'center' }}>
+        <nav aria-label="Breadcrumb" style={{ marginBottom: 20, fontSize: 13, color: 'var(--ink-3)' }}>
+          <ol style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', justifyContent: 'center', gap: 8 }}>
+            <li><Link to="/" style={{ color: 'var(--ink-3)', textDecoration: 'none' }}>Home</Link></li>
+            <li aria-hidden="true">/</li>
+            <li aria-current="page" style={{ color: 'var(--ink)' }}>Privacy Policy</li>
+          </ol>
+        </nav>
         <div className="wrap">
           <span style={{
             display: 'inline-block', fontSize: 12, fontWeight: 500,

@@ -10,6 +10,7 @@ import Pricing from './components/Pricing';
 import FAQ from './components/FAQ';
 import FinalCTA from './components/FinalCTA';
 import Footer from './components/Footer';
+import SEO from './components/SEO';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import { useScrollReveal } from './hooks/useScrollReveal';
@@ -66,15 +67,23 @@ function HomePage() {
 
   return (
     <>
+      <SEO
+        title="Subscription Tracker & Trial Reminder for Chrome"
+        description="Spot subscriptions and free trials the moment you sign up, get warned before they charge, and cancel in one click. All your data stays private — right in your browser."
+        canonical="https://greedysub.com/"
+        keywords="subscription tracker, trial reminder, cancel subscriptions, save money, Chrome extension, budget tracker, recurring payments, subscription manager, free trial tracker"
+      />
       <Navbar />
-      <Hero ctaText={TWEAK_DEFAULTS.ctaText} heroPill={TWEAK_DEFAULTS.heroPill} />
-      <ProblemSection />
-      <HowItWorks />
-      <Features />
-      <Privacy />
-      <Pricing />
-      <FAQ />
-      <FinalCTA ctaText={TWEAK_DEFAULTS.ctaText} />
+      <main id="main-content">
+        <Hero ctaText={TWEAK_DEFAULTS.ctaText} heroPill={TWEAK_DEFAULTS.heroPill} />
+        <ProblemSection />
+        <HowItWorks />
+        <Features />
+        <Privacy />
+        <Pricing />
+        <FAQ />
+        <FinalCTA ctaText={TWEAK_DEFAULTS.ctaText} />
+      </main>
       <Footer />
     </>
   );

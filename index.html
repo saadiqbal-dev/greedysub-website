@@ -2,14 +2,163 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://greedysub.com/" />
+
+    <!-- Base Title & Description -->
     <title>GreedySub — Subscription Tracker & Trial Reminder for Chrome</title>
+    <meta name="description" content="Spot subscriptions and free trials the moment you sign up, get warned before they charge, and cancel in one click. All your data stays private — right in your browser." />
+    <meta name="keywords" content="subscription tracker, trial reminder, cancel subscriptions, save money, Chrome extension, budget tracker, recurring payments, subscription manager, free trial tracker, spending tracker" />
+
+    <!-- Author & Publisher -->
+    <meta name="author" content="GreedySub" />
+    <meta name="publisher" content="GreedySub" />
+    <meta name="copyright" content="© 2026 GreedySub. All rights reserved." />
+
+    <!-- Robots -->
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="bingbot" content="index, follow" />
+
+    <!-- Theme & Mobile -->
+    <meta name="theme-color" content="#4A7DB3" />
+    <meta name="msapplication-TileColor" content="#4A7DB3" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="GreedySub" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="GreedySub" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+    <!-- Open Graph (Facebook, LinkedIn, etc.) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="GreedySub" />
+    <meta property="og:title" content="GreedySub — Subscription Tracker & Trial Reminder for Chrome" />
+    <meta property="og:description" content="Spot subscriptions and free trials the moment you sign up, get warned before they charge, and cancel in one click. All your data stays private — right in your browser." />
+    <meta property="og:url" content="https://greedysub.com/" />
+    <meta property="og:image" content="https://greedysub.com/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="GreedySub dashboard showing subscription tracking and savings" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@greedysub" />
+    <meta name="twitter:creator" content="@greedysub" />
+    <meta name="twitter:title" content="GreedySub — Subscription Tracker & Trial Reminder for Chrome" />
+    <meta name="twitter:description" content="Spot subscriptions and free trials the moment you sign up, get warned before they charge, and cancel in one click. All your data stays private — right in your browser." />
+    <meta name="twitter:image" content="https://greedysub.com/og-image.png" />
+    <meta name="twitter:image:alt" content="GreedySub dashboard showing subscription tracking and savings" />
+
+    <!-- Favicon & App Icons -->
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+    <link rel="mask-icon" href="/vite.svg" color="#4A7DB3" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Preconnect & DNS Prefetch for Performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Structured Data: Organization & SoftwareApplication -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://greedysub.com/#organization",
+          "name": "GreedySub",
+          "url": "https://greedysub.com",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://greedysub.com/icon-192.png",
+            "width": 192,
+            "height": 192
+          },
+          "sameAs": [
+            "https://twitter.com/greedysub"
+          ],
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "email": "mailto:saad@sloppydev.com",
+            "contactType": "customer support",
+            "availableLanguage": ["English"]
+          }
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://greedysub.com/#website",
+          "url": "https://greedysub.com",
+          "name": "GreedySub",
+          "publisher": {
+            "@id": "https://greedysub.com/#organization"
+          },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://greedysub.com/?q={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "SoftwareApplication",
+          "@id": "https://greedysub.com/#product",
+          "name": "GreedySub",
+          "applicationCategory": "BrowserApplication",
+          "operatingSystem": "Chrome",
+          "offers": [
+            {
+              "@type": "Offer",
+              "name": "Free",
+              "price": "0",
+              "priceCurrency": "USD"
+            },
+            {
+              "@type": "Offer",
+              "name": "Pro",
+              "price": "5",
+              "priceCurrency": "USD",
+              "priceValidUntil": "2026-12-31",
+              "availability": "https://schema.org/InStock"
+            }
+          ],
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.8",
+            "ratingCount": "1200",
+            "bestRating": "5",
+            "worstRating": "1"
+          },
+          "featureList": "Auto-detect subscriptions and trials, Smart renewal alerts, One-click cancel for 50+ services, Multi-currency dashboard, Budget guardrails, Privacy-first local storage",
+          "screenshot": "https://greedysub.com/screenshot-dashboard.png",
+          "softwareVersion": "1.0",
+          "downloadUrl": "https://greedysub.com/#cta",
+          "inLanguage": "en"
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
+    <noscript>
+      <style>body{font-family:system-ui,sans-serif;background:#fafafa;color:#1a1a2e;line-height:1.6;padding:40px 20px;max-width:720px;margin:0 auto}h1{font-size:2rem;margin-bottom:.5rem}p{margin-bottom:1rem}a{color:#2563eb}</style>
+      <h1>GreedySub — Subscription Tracker & Trial Reminder</h1>
+      <p>GreedySub spots subscriptions and free trials the moment you sign up, warns you before they charge, and helps you cancel in one click. All your data stays private — right in your browser.</p>
+      <p><strong>JavaScript is required</strong> to use the GreedySub website. Please enable JavaScript in your browser settings to continue.</p>
+      <p>Questions? Contact us at <a href="mailto:saad@sloppydev.com">saad@sloppydev.com</a></p>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

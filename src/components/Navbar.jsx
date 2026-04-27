@@ -29,13 +29,13 @@ export default function Navbar({ legalPage = false }) {
   }, []);
 
   return (
-    <nav className={`nav ${scrolled ? 'scrolled' : ''} ${hidden ? 'hidden' : ''}`}>
+    <nav className={`nav ${scrolled ? 'scrolled' : ''} ${hidden ? 'hidden' : ''}`} aria-label="Main navigation">
       <div className="nav-inner">
-        <Link to="/" className="logo" style={{ textDecoration: 'none', color: 'inherit' }}>
-          <span className="logo-mark"></span>
+        <Link to="/" className="logo" style={{ textDecoration: 'none', color: 'inherit' }} aria-label="GreedySub home">
+          <span className="logo-mark" aria-hidden="true"></span>
           <span>GreedySub</span>
         </Link>
-        <div className="nav-divider"></div>
+        <div className="nav-divider" aria-hidden="true"></div>
         {legalPage ? (
           <div className="nav-links">
             <Link to="/" style={{ color: 'var(--ink-2)', textDecoration: 'none', fontSize: 13.5, padding: '7px 12px', borderRadius: 999 }}>← Back to home</Link>

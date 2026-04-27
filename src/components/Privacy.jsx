@@ -1,14 +1,28 @@
 import React from 'react';
+import StructuredData from './StructuredData';
 
 export default function Privacy() {
+  const privacySchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: 'Privacy by Design — GreedySub',
+    description: 'Your data never leaves your browser. No cloud database, no analytics pixels, no tracking.',
+    mainEntity: {
+      '@type': 'Thing',
+      name: 'Privacy-First Architecture',
+      description: 'Subscriptions, trials, and savings stored in chrome.storage.local. Receipt parser only extracts price, currency, and cycle. Never reads card numbers, emails, or addresses.',
+    },
+  };
+
   return (
-    <section id="privacy">
+    <section id="privacy" aria-labelledby="privacy-heading">
+      <StructuredData data={privacySchema} />
       <div className="wrap">
         <div className="island dark reveal">
           <div className="privacy-grid">
             <div>
               <div className="section-tag">Privacy by design</div>
-              <h2>Your data never leaves your browser.</h2>
+              <h2 id="privacy-heading">Your data never leaves your browser.</h2>
               <p className="section-lead">No cloud database. No analytics pixels. No tracking. The only outbound network call is license validation — and even that works offline for 7 days.</p>
               <ul>
                 <li>Subscriptions, trials, and savings stored in <span className="mono">chrome.storage.local</span></li>
@@ -17,7 +31,7 @@ export default function Privacy() {
                 <li>Open about what's processed — and what isn't</li>
               </ul>
             </div>
-            <div className="privacy-mock">
+            <div className="privacy-mock" aria-label="Data handling diagram">
               <div><span className="c">// what greedysub reads</span></div>
               <div><span className="k">price</span>: <span className="s">"$10.99"</span></div>
               <div><span className="k">currency</span>: <span className="s">"USD"</span></div>
