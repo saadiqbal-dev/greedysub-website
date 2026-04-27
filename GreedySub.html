@@ -1,0 +1,1734 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>GreedySub — Subscription Tracker & Trial Reminder for Chrome</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  :root {
+    --bg: oklch(0.985 0.005 230);
+    --bg-2: oklch(0.975 0.012 230);
+    --ink: oklch(0.22 0.02 240);
+    --ink-2: oklch(0.42 0.02 240);
+    --ink-3: oklch(0.62 0.015 240);
+    --line: oklch(0.92 0.012 235);
+    --line-2: oklch(0.88 0.015 235);
+    --sky: oklch(0.72 0.13 235);
+    --sky-deep: oklch(0.55 0.16 245);
+    --sky-soft: oklch(0.94 0.04 235);
+    --sky-tint: oklch(0.97 0.02 235);
+    --amber: oklch(0.78 0.13 75);
+    --amber-soft: oklch(0.95 0.05 80);
+    --green: oklch(0.72 0.14 155);
+    --red: oklch(0.65 0.18 25);
+    --shadow-sm: 0 1px 0 oklch(0.85 0.02 240 / 0.4), 0 1px 2px oklch(0.7 0.05 240 / 0.06);
+    --shadow-md: 0 1px 0 oklch(0.85 0.02 240 / 0.5), 0 6px 16px -6px oklch(0.5 0.08 240 / 0.10), 0 2px 4px oklch(0.6 0.06 240 / 0.05);
+    --shadow-lg: 0 1px 0 oklch(0.85 0.02 240 / 0.6), 0 24px 48px -16px oklch(0.5 0.1 240 / 0.18), 0 8px 16px -8px oklch(0.5 0.08 240 / 0.10);
+    --r-sm: 8px;
+    --r: 14px;
+    --r-lg: 20px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    letter-spacing: -0.005em;
+  }
+  .mono { font-family: 'Geist', ui-sans-serif, system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+
+  /* layout */
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 28px; }
+  .narrow { max-width: 760px; margin: 0 auto; padding: 0 28px; }
+
+  /* floating dock nav */
+  .nav {
+    position: fixed;
+    top: 16px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 50;
+    max-width: calc(100vw - 24px);
+    transition: top .35s cubic-bezier(.2,.8,.2,1), transform .35s cubic-bezier(.2,.8,.2,1);
+  }
+  .nav-inner {
+    display: flex; align-items: center; gap: 6px;
+    height: 52px;
+    width: max-content;
+    max-width: 100%;
+    padding: 6px 6px 6px 18px;
+    background: oklch(1 0 0 / 0.72);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    border: 1px solid oklch(1 0 0 / 0.8);
+    border-radius: 999px;
+    box-shadow:
+      inset 0 1px 0 oklch(1 0 0 / 0.7),
+      0 1px 1px oklch(0.5 0.05 240 / 0.04),
+      0 12px 32px -12px oklch(0.4 0.1 240 / 0.18),
+      0 4px 12px -4px oklch(0.4 0.08 240 / 0.10);
+  }
+  .nav.scrolled .nav-inner {
+    background: oklch(1 0 0 / 0.85);
+    box-shadow:
+      inset 0 1px 0 oklch(1 0 0 / 0.7),
+      0 1px 1px oklch(0.5 0.05 240 / 0.06),
+      0 16px 36px -10px oklch(0.4 0.1 240 / 0.22),
+      0 6px 14px -4px oklch(0.4 0.08 240 / 0.14);
+  }
+  .logo { display: flex; align-items: center; gap: 9px; font-weight: 600; letter-spacing: -0.02em; font-size: 15px; padding-right: 6px; }
+  .logo-mark {
+    width: 22px; height: 22px; border-radius: 7px;
+    background: linear-gradient(155deg, var(--sky) 0%, var(--sky-deep) 100%);
+    box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.4), 0 2px 6px oklch(0.55 0.16 245 / 0.35);
+    position: relative; flex-shrink: 0;
+  }
+  .logo-mark::after {
+    content: ""; position: absolute; inset: 5px 5px auto auto; width: 5px; height: 5px;
+    border-radius: 50%; background: oklch(1 0 0 / 0.85);
+  }
+  .nav-divider { width: 1px; height: 22px; background: var(--line); margin: 0 2px; }
+  .nav-links { display: flex; gap: 2px; align-items: center; }
+  .nav-links a {
+    color: var(--ink-2); text-decoration: none;
+    font-size: 13.5px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    transition: background .15s ease, color .15s ease;
+  }
+  .nav-links a:hover { color: var(--ink); background: oklch(0.5 0.02 240 / 0.06); }
+  .nav-cta {
+    background: linear-gradient(180deg, var(--sky) 0%, var(--sky-deep) 100%) !important;
+    color: white !important;
+    padding: 9px 16px !important;
+    border-radius: 999px !important;
+    font-size: 13.5px; font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+    margin-left: 4px;
+    box-shadow:
+      inset 0 1px 0 oklch(1 0 0 / 0.35),
+      0 1px 2px oklch(0.5 0.16 245 / 0.25),
+      0 4px 10px -2px oklch(0.5 0.16 245 / 0.35);
+    transition: transform .15s ease, box-shadow .2s ease;
+  }
+  .nav-cta:hover {
+    background: linear-gradient(180deg, var(--sky) 0%, var(--sky-deep) 100%) !important;
+    color: white !important;
+    transform: translateY(-1px);
+  }
+
+  /* hero */
+  .hero {
+    position: relative;
+    padding: 140px 0 24px;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 0%, oklch(0.92 0.06 235 / 0.7), transparent 70%),
+      radial-gradient(circle at 50% 0%, oklch(0.78 0.13 235 / 0.18), transparent 50%);
+  }
+  .hero-bg::before {
+    content: ""; position: absolute; inset: 0;
+    opacity: var(--grid-vis, 1);
+    background-image:
+      linear-gradient(to right, oklch(0.78 0.06 235 / 0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, oklch(0.78 0.06 235 / 0.08) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 30%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 30%, transparent 80%);
+  }
+  .hero-inner { position: relative; text-align: center; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 12px 6px 8px;
+    background: oklch(1 0 0 / 0.7);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 13px;
+    color: var(--ink-2);
+    box-shadow: var(--shadow-sm);
+    white-space: nowrap;
+  }
+  .pill-dot {
+    width: 16px; height: 16px; border-radius: 999px;
+    background: var(--sky-soft);
+    color: var(--sky-deep);
+    font-size: 10px; font-weight: 600;
+    display: grid; place-items: center;
+  }
+  h1 {
+    font-size: clamp(40px, 6.4vw, 72px);
+    line-height: 1.04;
+    letter-spacing: -0.035em;
+    font-weight: 500;
+    margin: 22px auto 18px;
+    max-width: 20ch;
+    text-wrap: balance;
+  }
+  h1 em {
+    font-style: normal;
+    background: linear-gradient(180deg, var(--sky) 0%, var(--sky-deep) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .lead {
+    max-width: 56ch; margin: 0 auto;
+    color: var(--ink-2);
+    font-size: clamp(16px, 1.4vw, 18.5px);
+    line-height: 1.55;
+  }
+  .cta-row { display: flex; gap: 12px; justify-content: center; margin-top: 32px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 13px 22px;
+    border-radius: 12px;
+    font-size: 15px; font-weight: 500;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: transform .12s ease, box-shadow .2s ease, background .2s ease;
+    white-space: nowrap;
+  }
+  .btn-primary {
+    background: linear-gradient(180deg, var(--sky) 0%, var(--sky-deep) 100%);
+    color: white;
+    box-shadow:
+      inset 0 1px 0 oklch(1 0 0 / 0.3),
+      0 1px 0 oklch(0.4 0.1 240 / 0.4),
+      0 8px 22px -8px oklch(0.5 0.16 245 / 0.5);
+  }
+  .btn-primary:hover { transform: translateY(-1px); }
+  .btn-ghost {
+    background: oklch(1 0 0 / 0.6);
+    color: var(--ink);
+    border-color: var(--line-2);
+  }
+  .btn-ghost:hover { background: white; }
+  .btn .chev { font-family: 'Geist', ui-sans-serif, system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; opacity: .6; }
+  .hero-meta {
+    margin-top: 22px;
+    color: var(--ink-3);
+    font-size: 13px;
+  }
+  .hero-meta .mono { color: var(--ink-2); }
+
+  /* product mock */
+  .mock-wrap {
+    position: relative;
+    margin: 56px auto 0;
+    max-width: 980px;
+    padding: 0 28px;
+  }
+  .browser {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+  .browser-bar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 16px;
+    background: var(--bg-2);
+    border-bottom: 1px solid var(--line);
+  }
+  .traffic { display: flex; gap: 6px; }
+  .traffic span { width: 11px; height: 11px; border-radius: 50%; background: var(--line-2); }
+  .urlbar {
+    flex: 1; height: 28px;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    display: flex; align-items: center;
+    padding: 0 12px;
+    font-size: 12px;
+    color: var(--ink-3);
+    font-family: 'Geist', ui-sans-serif, system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: 0.02em;
+  }
+  .urlbar::before {
+    content: ""; width: 9px; height: 9px; border: 1.5px solid var(--ink-3);
+    border-radius: 50%; margin-right: 8px;
+    border-bottom-color: transparent; transform: rotate(45deg);
+  }
+  .ext-icon {
+    width: 26px; height: 26px; border-radius: 7px;
+    background: linear-gradient(155deg, var(--sky), var(--sky-deep));
+    box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.4);
+    position: relative;
+  }
+  .ext-icon::after {
+    content: ""; position: absolute; inset: 5px 5px auto auto; width: 6px; height: 6px;
+    border-radius: 50%; background: white;
+  }
+
+  .panel {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: 480px;
+  }
+  .panel-side {
+    background: var(--bg-2);
+    border-right: 1px solid var(--line);
+    padding: 22px 18px;
+  }
+  .side-label {
+    font-family: 'Geist', ui-sans-serif, system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: 0.02em;
+    font-size: 11px; color: var(--ink-3);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin: 18px 0 10px;
+  }
+  .side-label:first-child { margin-top: 0; }
+  .stat {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 8px;
+  }
+  .stat-label { font-size: 12.5px; color: var(--ink-3); }
+  .stat-num { font-size: 24px; font-weight: 500; letter-spacing: -0.025em; margin-top: 4px; font-family: 'Geist', sans-serif; }
+  .stat-num.green { color: var(--green); }
+  .stat-num.sky { color: var(--sky-deep); }
+
+  .panel-main { padding: 22px 24px; }
+  .panel-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
+  .panel-head h3 { margin: 0; font-size: 17px; font-weight: 500; letter-spacing: -0.015em; }
+  .panel-head .sub { font-size: 13px; color: var(--ink-3); }
+
+  .sub-row {
+    display: grid;
+    grid-template-columns: 22px 1fr 110px 90px 70px;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--line);
+    font-size: 14px;
+  }
+  .sub-row:last-child { border-bottom: none; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot.g { background: var(--green); box-shadow: 0 0 0 3px oklch(0.72 0.14 155 / 0.18); }
+  .dot.a { background: var(--amber); box-shadow: 0 0 0 3px oklch(0.78 0.13 75 / 0.2); }
+  .dot.r { background: var(--red); box-shadow: 0 0 0 3px oklch(0.65 0.18 25 / 0.18); }
+  .sub-name { font-weight: 500; }
+  .sub-cycle { color: var(--ink-3); font-size: 12.5px; }
+  .sub-meta { color: var(--ink-3); font-size: 13px; font-family: 'Geist', ui-sans-serif, system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+  .price { font-weight: 500; font-family: 'Geist', ui-sans-serif, system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; font-size: 13.5px; text-align: right; }
+  .x-btn {
+    width: 26px; height: 26px; border-radius: 8px;
+    border: 1px solid var(--line); background: white;
+    color: var(--ink-3); font-size: 14px;
+    cursor: pointer; margin-left: auto;
+    display: grid; place-items: center;
+  }
+  .x-btn:hover { border-color: var(--red); color: var(--red); }
+
+  .toast {
+    position: absolute; right: -8px; top: 90px;
+    background: white; border: 1px solid var(--line);
+    border-radius: 12px; padding: 14px 16px;
+    box-shadow: var(--shadow-md);
+    font-size: 13px;
+    width: 240px;
+    transform: rotate(2deg);
+  }
+  .toast-head { display: flex; align-items: center; gap: 8px; font-weight: 500; margin-bottom: 4px; }
+  .toast-head .dot { width: 9px; height: 9px; }
+  .toast-body { color: var(--ink-2); }
+  .toast-body b { color: var(--ink); font-weight: 500; }
+
+  /* section — island design language */
+  section { padding: 80px 0; position: relative; }
+  .island {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    box-shadow:
+      inset 0 1px 0 oklch(1 0 0 / 0.6),
+      0 1px 1px oklch(0.5 0.05 240 / 0.04),
+      0 30px 60px -30px oklch(0.4 0.1 240 / 0.18),
+      0 12px 24px -12px oklch(0.4 0.08 240 / 0.10);
+    padding: 64px 56px;
+    position: relative;
+    overflow: hidden;
+  }
+  .island.tinted {
+    background: linear-gradient(180deg, white 0%, var(--sky-tint) 100%);
+    border-color: var(--sky-soft);
+  }
+  .island.dark {
+    background: linear-gradient(180deg, oklch(0.22 0.02 240) 0%, oklch(0.14 0.02 240) 100%);
+    color: oklch(0.92 0.01 240);
+    border-color: oklch(0.3 0.03 240);
+  }
+  .island.dark .section-tag { color: oklch(0.78 0.13 235); }
+  .island.dark h2 { color: white; }
+  .island.dark .section-lead { color: oklch(0.75 0.01 240); }
+
+  /* scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity .8s cubic-bezier(.2,.8,.2,1), transform .8s cubic-bezier(.2,.8,.2,1);
+  }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+  .reveal.delay-1 { transition-delay: .08s; }
+  .reveal.delay-2 { transition-delay: .16s; }
+  .reveal.delay-3 { transition-delay: .24s; }
+  .reveal.delay-4 { transition-delay: .32s; }
+
+  .section-tag {
+    font-family: 'Geist', ui-sans-serif, system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: 0.02em;
+    font-size: 12px; letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--sky-deep);
+    margin-bottom: 18px;
+  }
+  h2 {
+    font-size: clamp(30px, 4vw, 44px);
+    line-height: 1.08; letter-spacing: -0.03em;
+    font-weight: 500;
+    margin: 0 0 18px;
+    max-width: 18ch;
+  }
+  .section-lead { color: var(--ink-2); font-size: 17px; max-width: 56ch; margin: 0; }
+
+  /* problem */
+  .problem-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+  .stat-card {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    padding: 40px;
+    box-shadow: var(--shadow-md);
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::before {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(circle at 100% 0%, var(--sky-soft), transparent 60%);
+    pointer-events: none;
+  }
+  .stat-big {
+    font-size: clamp(72px, 10vw, 120px);
+    font-weight: 400;
+    letter-spacing: -0.045em;
+    line-height: 0.95;
+    background: linear-gradient(180deg, var(--sky) 0%, var(--sky-deep) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    position: relative;
+  }
+  .stat-cap { font-size: 14px; color: var(--ink-3); margin-top: 10px; position: relative; }
+  .receipt {
+    position: absolute;
+    right: -16px; bottom: 24px;
+    background: white; border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-family: 'Geist', ui-sans-serif, system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: 0.02em;
+    font-size: 11px;
+    color: var(--ink-2);
+    box-shadow: var(--shadow-sm);
+    transform: rotate(-3deg);
+    line-height: 1.7;
+  }
+  .receipt b { color: var(--ink); font-weight: 500; }
+  .receipt .strike { text-decoration: line-through; color: var(--ink-3); }
+
+  /* steps */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 56px;
+  }
+  .step {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: var(--r);
+    padding: 24px;
+    position: relative;
+  }
+  .step-num {
+    font-family: 'Geist', ui-sans-serif, system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: 0.02em;
+    font-size: 12px;
+    color: var(--sky-deep);
+    margin-bottom: 18px;
+  }
+  .step-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--sky-tint);
+    border: 1px solid var(--line);
+    display: grid; place-items: center;
+    margin-bottom: 18px;
+    color: var(--sky-deep);
+  }
+  .step-icon svg { width: 18px; height: 18px; }
+  .step h4 { margin: 0 0 6px; font-size: 16px; font-weight: 500; letter-spacing: -0.01em; }
+  .step p { margin: 0; font-size: 14px; color: var(--ink-2); line-height: 1.55; }
+
+  /* features */
+  .feat-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 16px;
+    margin-top: 56px;
+  }
+  .feat {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: var(--r);
+    padding: 28px;
+    grid-column: span 3;
+    box-shadow: var(--shadow-sm);
+  }
+  .feat.wide { grid-column: span 6; }
+  .feat.third { grid-column: span 2; }
+  .feat-tag {
+    font-family: 'Geist', ui-sans-serif, system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: 0.02em;
+    font-size: 11px; letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 14px;
+  }
+  .feat h3 { margin: 0 0 8px; font-size: 22px; font-weight: 500; letter-spacing: -0.02em; }
+  .feat p { margin: 0; color: var(--ink-2); font-size: 14.5px; line-height: 1.6; }
+  .feat .preview {
+    margin-top: 22px;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 18px;
+    min-height: 160px;
+    position: relative;
+    overflow: hidden;
+    min-width: 0;
+  }
+
+  /* alert preview */
+  .alert-list { display: flex; flex-direction: column; gap: 8px; }
+  .alert-item {
+    background: white; border: 1px solid var(--line);
+    border-radius: 10px; padding: 10px 12px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px;
+  }
+  .alert-item .countdown { margin-left: auto; font-family: 'Geist', ui-sans-serif, system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; font-size: 12px; color: var(--ink-3); }
+  .alert-item.urgent { border-color: oklch(0.85 0.1 75); background: oklch(0.98 0.03 75); }
+  .alert-item.urgent .countdown { color: var(--amber); }
+
+  /* services list */
+  .services { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .chip {
+    padding: 6px 11px;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 12.5px;
+    color: var(--ink-2);
+  }
+
+  /* currency preview — single column to avoid overflow in narrow card */
+  .currency-list { display: flex; flex-direction: column; gap: 6px; }
+  .currency-row {
+    display: flex; justify-content: space-between; gap: 8px;
+    min-width: 0;
+    padding: 7px 10px;
+    background: white; border: 1px solid var(--line);
+    border-radius: 8px;
+    font-family: 'Geist', ui-sans-serif, system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: 0.02em;
+    font-size: 12px;
+  }
+  .currency-row .from { color: var(--ink-3); }
+  .currency-row .to { color: var(--ink); }
+
+  /* budget preview */
+  .budget-bar {
+    height: 10px; background: var(--bg-2);
+    border-radius: 999px; overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .budget-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--sky) 0%, var(--amber) 90%, var(--red) 100%);
+    width: 92%;
+    border-radius: 999px;
+  }
+  .budget-row { display: flex; justify-content: space-between; gap: 8px; font-family: 'Geist', ui-sans-serif, system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; font-size: 11.5px; margin-top: 8px; white-space: nowrap; }
+
+  /* privacy */
+  .privacy {
+    background: var(--bg-2);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .privacy-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 80px; align-items: center; }
+  .privacy-mock {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: var(--r);
+    padding: 22px;
+    box-shadow: var(--shadow-md);
+    font-family: 'Geist', ui-sans-serif, system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: 0.02em;
+    font-size: 12.5px;
+    line-height: 1.85;
+  }
+  .privacy-mock .k { color: var(--sky-deep); }
+  .privacy-mock .c { color: var(--ink-3); }
+  .privacy-mock .s { color: var(--green); }
+  .privacy-mock .x { color: var(--red); }
+  .privacy ul { padding: 0; margin: 18px 0 0; list-style: none; }
+  .privacy li { padding: 10px 0; border-top: 1px dashed var(--line-2); display: flex; gap: 12px; font-size: 14.5px; color: var(--ink-2); }
+  .privacy li::before { content: "›"; color: var(--sky); font-family: 'Geist', ui-sans-serif, system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+
+  /* pricing */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 56px;
+  }
+  .plan {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    padding: 36px;
+    position: relative;
+  }
+  .plan.pro {
+    background: linear-gradient(180deg, white 0%, var(--sky-tint) 100%);
+    border-color: var(--sky-soft);
+    box-shadow: var(--shadow-md);
+  }
+  .plan-name { font-size: 14px; font-family: 'Geist', ui-sans-serif, system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.06em; }
+  .plan-price { font-size: 56px; font-weight: 400; letter-spacing: -0.04em; line-height: 1; margin: 14px 0 4px; }
+  .plan-price .per { font-size: 16px; color: var(--ink-3); font-weight: 400; letter-spacing: 0; }
+  .plan-tag { font-size: 14px; color: var(--ink-3); margin-bottom: 24px; }
+  .plan ul { list-style: none; padding: 0; margin: 0 0 28px; }
+  .plan li {
+    padding: 9px 0;
+    border-top: 1px solid var(--line);
+    font-size: 14.5px;
+    display: flex; align-items: center; gap: 10px;
+    color: var(--ink-2);
+  }
+  .plan li:first-child { border-top: none; padding-top: 0; }
+  .plan li svg { width: 14px; height: 14px; flex-shrink: 0; color: var(--sky-deep); }
+  .plan .btn { width: 100%; justify-content: center; }
+  .ribbon {
+    position: absolute; top: 28px; right: 28px;
+    font-family: 'Geist', ui-sans-serif, system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: 0.02em;
+    white-space: nowrap;
+    font-size: 11px; letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: var(--sky-deep); color: white;
+    padding: 4px 10px; border-radius: 6px;
+  }
+
+  /* faq — single column for readability */
+  .faq { display: grid; grid-template-columns: 1fr; gap: 0; margin-top: 48px; max-width: 760px; margin-left: auto; margin-right: auto; }
+  #faq .section-tag, #faq h2 { text-align: center; }
+  #faq h2 { margin-left: auto; margin-right: auto; }
+  details {
+    border-top: 1px solid var(--line);
+    padding: 18px 0;
+  }
+  details summary {
+    font-size: 16px; font-weight: 500; letter-spacing: -0.01em;
+    cursor: pointer; list-style: none;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details summary::after {
+    content: "+"; font-family: 'Geist', ui-sans-serif, system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: 0.02em;
+    color: var(--ink-3); font-size: 18px; transition: transform .2s ease;
+  }
+  details[open] summary::after { content: "−"; }
+  details p { margin: 12px 0 0; color: var(--ink-2); font-size: 14.5px; line-height: 1.6; }
+
+  /* final cta */
+  .final {
+    text-align: center;
+    padding: 120px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .final::before {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 50% 40% at 50% 60%, oklch(0.85 0.1 235 / 0.5), transparent 70%);
+    pointer-events: none;
+  }
+  .final h2 {
+    margin: 0 auto 16px;
+    font-size: clamp(36px, 5vw, 56px);
+    max-width: 22ch;
+  }
+  .final p { color: var(--ink-2); font-size: 18px; max-width: 50ch; margin: 0 auto 32px; }
+
+  /* footer */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 40px 0 60px;
+    color: var(--ink-3);
+    font-size: 13.5px;
+  }
+  .foot-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+  .foot-links { display: flex; gap: 22px; }
+  .foot-links a { color: var(--ink-3); text-decoration: none; }
+  .foot-links a:hover { color: var(--ink); }
+
+  /* ───────── responsive ───────── */
+
+  /* tablet — 1024 down: tighten layout, reduce hero padding, scale dashboard */
+  @media (max-width: 1024px) {
+    .wrap { padding: 0 24px; }
+    .hero { padding: 120px 0 24px; }
+    .mock-wrap { padding: 0 24px; margin-top: 48px; }
+    .island { padding: 56px 44px; border-radius: 24px; }
+    section { padding: 64px 0; }
+    .feat-grid { grid-template-columns: repeat(4, 1fr); }
+    .feat.wide { grid-column: span 4; }
+    .feat.third { grid-column: span 2; }
+    .steps { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .privacy-grid { gap: 56px; }
+    .problem-wrap { gap: 48px; }
+    .toast { right: 4px; top: 78px; transform: scale(.92); transform-origin: top right; }
+  }
+
+  /* small tablet / large mobile — 880 down: stack everything, but keep elegance */
+  @media (max-width: 880px) {
+    .wrap { padding: 0 20px; }
+    .narrow { padding: 0 20px; }
+
+    /* nav: collapse to logo + single CTA */
+    .nav { top: 12px; }
+    .nav-inner { height: 48px; padding: 5px 5px 5px 14px; gap: 4px; }
+    .logo { font-size: 14px; }
+    .nav-links { display: flex; gap: 0; }
+    .nav-links a:not(.nav-cta) { display: none; }
+    .nav-links .nav-cta { padding: 8px 14px !important; font-size: 13px; }
+
+    /* hero: tighter, smaller mock */
+    .hero { padding: 100px 0 16px; }
+    h1 { font-size: clamp(34px, 7vw, 48px); margin: 16px auto 14px; max-width: 18ch; }
+    .lead { font-size: 16px; max-width: 50ch; }
+    .pill { font-size: 12px; padding: 5px 11px 5px 7px; }
+    .pill-dot { width: 18px; height: 18px; font-size: 11px; }
+    .cta-row { gap: 10px; margin-top: 24px; }
+    .btn { padding: 12px 18px; font-size: 14px; }
+    .ticker { gap: 14px; font-size: 11px; flex-wrap: wrap; justify-content: center; }
+    .mock-wrap { padding: 0 16px; margin-top: 40px; }
+    .browser { border-radius: 14px; }
+    .browser-bar { padding: 10px 12px; }
+    .urlbar { font-size: 11px; height: 26px; }
+    .toast { display: none; }
+
+    /* dashboard: stack columns, simplify rows */
+    .panel { grid-template-columns: 1fr; min-height: 0; }
+    .panel-side {
+      border-right: none; border-bottom: 1px solid var(--line);
+      padding: 16px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    }
+    .panel-side .side-label { display: none; }
+    .stat { padding: 10px 12px; margin-bottom: 0; }
+    .stat-label { font-size: 10px; }
+    .stat-num { font-size: 20px; }
+    .panel-main { padding: 16px; }
+    .panel-head h3 { font-size: 15px; }
+    .panel-head .sub { font-size: 11px; }
+    .sub-row {
+      grid-template-columns: 10px 1fr auto;
+      gap: 10px; padding: 12px 4px; font-size: 13px;
+    }
+    .sub-row .sub-meta, .sub-row .x-btn { display: none; }
+    .sub-name { font-size: 13.5px; }
+    .sub-cycle { font-size: 11px; }
+
+    /* islands */
+    .island { padding: 44px 28px; border-radius: 22px; }
+    section { padding: 48px 0; }
+    h2 { font-size: clamp(26px, 5.5vw, 36px); }
+    .section-lead { font-size: 15.5px; }
+
+    /* layouts */
+    .problem-wrap, .privacy-grid { grid-template-columns: 1fr; gap: 36px; }
+    .stat-card { padding: 28px; }
+    .steps { grid-template-columns: 1fr; gap: 12px; margin-top: 36px; }
+    .step { padding: 22px; }
+    .feat-grid { grid-template-columns: 1fr; gap: 14px; margin-top: 36px; }
+    .feat, .feat.wide, .feat.third { grid-column: span 1; padding: 24px; }
+    .feat h3 { font-size: 19px; }
+
+    /* pricing — stack with pro on top */
+    .pricing-grid { grid-template-columns: 1fr; gap: 14px; margin-top: 36px; }
+    .plan { padding: 28px 24px; }
+    .plan.pro { order: -1; }
+    .plan-price { font-size: 36px; }
+    .ribbon { top: 20px; right: 20px; }
+
+    /* faq */
+    .faq { margin-top: 32px; }
+    details { padding: 16px 12px; }
+    details summary { font-size: 16px; }
+
+    /* final cta */
+    .final { padding: 72px 0; }
+    .final h2 { font-size: clamp(28px, 6.5vw, 40px); }
+
+    /* footer */
+    .foot-row { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .foot-links { flex-wrap: wrap; gap: 16px; }
+
+    /* marquee — speed up slightly so it feels alive on small screens */
+    .marquee { animation-duration: 28s; }
+    .marquee .chip { font-size: 12.5px; padding: 7px 13px; }
+  }
+
+  /* mobile — 520 down: tighten further */
+  @media (max-width: 520px) {
+    .wrap { padding: 0 16px; }
+    .narrow { padding: 0 16px; }
+    .nav { top: 10px; }
+    .nav-inner { padding: 4px 4px 4px 12px; }
+    .logo span:not(.logo-mark) { display: none; }
+    .nav-links .nav-cta { padding: 7px 12px !important; font-size: 12.5px; }
+
+    .hero { padding: 84px 0 8px; }
+    h1 { font-size: clamp(30px, 8.5vw, 40px); }
+    .lead { font-size: 15px; }
+    .cta-row { flex-direction: column; align-items: stretch; }
+    .btn { width: 100%; justify-content: center; padding: 13px 18px; }
+    .ticker { gap: 10px; font-size: 10.5px; }
+
+    .mock-wrap { padding: 0 12px; }
+    .panel-side { grid-template-columns: 1fr 1fr; }
+
+    .island { padding: 36px 20px; border-radius: 20px; }
+    section { padding: 40px 0; }
+    .stat-card { padding: 24px 20px; }
+    .step { padding: 20px; }
+    .feat, .feat.wide, .feat.third { padding: 22px 20px; }
+    .plan { padding: 24px 20px; }
+
+    /* feature mini-previews simplification */
+    .preview { padding: 14px !important; }
+    .alert-item { font-size: 12px; padding: 8px 10px; }
+    .currency-row { font-size: 11px; padding: 6px 9px; }
+  }
+
+  /* tiny — 360 down: edge-case */
+  @media (max-width: 360px) {
+    .wrap { padding: 0 12px; }
+    .island { padding: 28px 16px; }
+    h1 { font-size: 28px; }
+    .nav-links .nav-cta { font-size: 12px; padding: 6px 10px !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="logo">
+      <span class="logo-mark"></span>
+      <span>GreedySub</span>
+    </div>
+    <div class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+      <a href="#cta" class="nav-cta">Add to Chrome</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-bg"></div>
+  <div class="wrap hero-inner">
+    <span class="pill" data-hero-pill="">
+      <span class="pill-dot">$</span>
+      Average user saves $40–80 / month
+    </span>
+    <h1>The subscription tracker that <em>actually saves you money.</em></h1>
+    <p class="lead">GreedySub spots subscriptions and free trials the moment you sign up, warns you before they charge, and helps you cancel in one click. All your data stays private — right in your browser.</p>
+    <div class="cta-row">
+      <a href="#cta" class="btn btn-primary" data-cta-text="">Add to Chrome — It's Free <span class="chev">→</span></a>
+      <a href="#how" class="btn btn-ghost">See how it works</a>
+    </div>
+    <div class="ticker">
+      <span><span class="blip"></span> Live · v1.0</span>
+      <span>No account required</span>
+      <span>Works offline</span>
+      <span class="mono">100% local data</span>
+    </div>
+  </div>
+
+  <!-- product mock -->
+  <div class="mock-wrap">
+    <div class="browser">
+      <div class="browser-bar">
+        <div class="traffic"><span></span><span></span><span></span></div>
+        <div class="urlbar">greedysub.app/dashboard</div>
+        <div class="ext-icon" aria-hidden="true"></div>
+      </div>
+      <div class="panel">
+        <aside class="panel-side">
+          <div class="side-label">This month</div>
+          <div class="stat">
+            <div class="stat-label">Spending</div>
+            <div class="stat-num sky" data-counter data-target="127.40" data-prefix="$">$127.40</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Saved by canceling</div>
+            <div class="stat-num green" data-counter data-target="83" data-prefix="$">$83.00</div>
+          </div>
+          <div class="side-label">Active trials</div>
+          <div class="stat">
+            <div class="stat-label">Ending soon</div>
+            <div class="stat-num" data-counter data-target="3">3</div>
+          </div>
+        </aside>
+        <div class="panel-main">
+          <div class="panel-head">
+            <h3>Subscriptions</h3>
+            <span class="sub">7 active · sorted by next charge</span>
+          </div>
+          <div class="sub-row">
+            <span class="dot r" title="Renews soon, low usage"></span>
+            <span><span class="sub-name">Adobe Creative Cloud</span><br><span class="sub-cycle">Monthly · unused 15 days</span></span>
+            <span class="sub-meta">in 2 days</span>
+            <span class="price">$54.99</span>
+            <button class="x-btn" title="Cancel">✕</button>
+          </div>
+          <div class="sub-row">
+            <span class="dot a" title="Trial ending"></span>
+            <span><span class="sub-name">ChatGPT Plus</span><br><span class="sub-cycle">Trial · ends in 3 days</span></span>
+            <span class="sub-meta">trial</span>
+            <span class="price">$20.00</span>
+            <button class="x-btn" title="Cancel">✕</button>
+          </div>
+          <div class="sub-row">
+            <span class="dot g" title="Active"></span>
+            <span><span class="sub-name">Spotify Premium</span><br><span class="sub-cycle">Monthly · used daily</span></span>
+            <span class="sub-meta">in 12 days</span>
+            <span class="price">$10.99</span>
+            <button class="x-btn" title="Cancel">✕</button>
+          </div>
+          <div class="sub-row">
+            <span class="dot g" title="Active"></span>
+            <span><span class="sub-name">Notion</span><br><span class="sub-cycle">Yearly · workspace</span></span>
+            <span class="sub-meta">in 84 days</span>
+            <span class="price">$96.00</span>
+            <button class="x-btn" title="Cancel">✕</button>
+          </div>
+          <div class="sub-row">
+            <span class="dot a" title="Inactive"></span>
+            <span><span class="sub-name">NordVPN</span><br><span class="sub-cycle">Monthly · unused 28 days</span></span>
+            <span class="sub-meta">in 19 days</span>
+            <span class="price">$11.99</span>
+            <button class="x-btn" title="Cancel">✕</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="toast">
+      <div class="toast-head"><span class="dot a"></span> Trial ends in 3 days</div>
+      <div class="toast-body"><b>ChatGPT Plus</b> renews May&nbsp;1 at <b>$20.00</b>. Cancel now to avoid charge.</div>
+    </div>
+  </div>
+
+  <div class="strip-wrap reveal">
+    <div class="wrap"><div class="strip-tag">— Detects subscriptions across —</div></div>
+    <div class="marquee">
+      <span class="chip">Netflix</span><span class="chip">Spotify</span><span class="chip">ChatGPT</span><span class="chip">Adobe Creative Cloud</span><span class="chip">Disney+</span><span class="chip">Notion</span><span class="chip">Figma</span><span class="chip">Canva</span><span class="chip">GitHub</span><span class="chip">Slack</span><span class="chip">Zoom</span><span class="chip">NordVPN</span><span class="chip">1Password</span><span class="chip">HBO Max</span><span class="chip">Hulu</span><span class="chip">Audible</span><span class="chip">Claude</span><span class="chip mono">+ 100 more</span>
+      <span class="chip">Netflix</span><span class="chip">Spotify</span><span class="chip">ChatGPT</span><span class="chip">Adobe Creative Cloud</span><span class="chip">Disney+</span><span class="chip">Notion</span><span class="chip">Figma</span><span class="chip">Canva</span><span class="chip">GitHub</span><span class="chip">Slack</span><span class="chip">Zoom</span><span class="chip">NordVPN</span><span class="chip">1Password</span><span class="chip">HBO Max</span><span class="chip">Hulu</span><span class="chip">Audible</span><span class="chip">Claude</span><span class="chip mono">+ 100 more</span>
+    </div>
+  </div>
+</header>
+
+<!-- PROBLEM -->
+<section>
+  <div class="wrap">
+   <div class="island reveal">
+    <div class="problem-wrap">
+      <div>
+        <div class="section-tag">The problem</div>
+        <h2>48% of people forget to cancel free trials.</h2>
+        <p class="section-lead">You sign up for a "7-day free trial," swear you'll cancel before it charges, then life happens. Three months later, you've paid $60 for something you never used.</p>
+        <p class="section-lead" style="margin-top:18px">GreedySub is your safety net. It catches the exact moment you sign up, tracks every renewal, and nudges you before money leaves your account.</p>
+      </div>
+      <div class="stat-card">
+        <div class="stat-big" data-counter data-target="240" data-prefix="$">$240</div>
+        <div class="stat-cap">Average loss per person, per year, to forgotten subscriptions.</div>
+        <div class="receipt">
+          <div><b>RECEIPT</b></div>
+          <div class="strike">Adobe CC × 4mo</div>
+          <div class="strike">Hulu × 6mo</div>
+          <div class="strike">Audible × 9mo</div>
+          <div>Caught early ✓</div>
+        </div>
+      </div>
+    </div>
+   </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="wrap">
+   <div class="island reveal">
+    <div class="section-tag">How it works</div>
+    <h2>Four quiet steps. Zero spreadsheets.</h2>
+    <p class="section-lead">GreedySub lives in your browser. It watches for subscription moments, organizes them on a clean dashboard, warns you before charges, and cancels in a click.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01 / DETECT</div>
+        <div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></div>
+        <h4>Automatically</h4>
+        <p>Land on a receipt, checkout, or trial signup — GreedySub extracts the price, currency, cycle, and next charge in milliseconds.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02 / TRACK</div>
+        <div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 10h18M9 3v18"/></svg></div>
+        <h4>Visually</h4>
+        <p>Every subscription, trial, and upcoming charge in one calm dashboard. Status dots tell you what's healthy at a glance.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03 / WARN</div>
+        <div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg></div>
+        <h4>Before you pay</h4>
+        <p>Smart alerts ahead of trial ends and renewals. Plus checkout warnings when a sign-up would blow your monthly budget.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">04 / CANCEL</div>
+        <div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></div>
+        <h4>In one click</h4>
+        <p>No more digging through 5 layers of menus. GreedySub has direct cancel links for 50+ services. Click, done, money saved.</p>
+      </div>
+    </div>
+   </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="wrap">
+   <div class="island tinted reveal">
+    <div class="section-tag">Core features</div>
+    <h2>Small surface. Surprisingly thorough.</h2>
+    <p class="section-lead">Everything you need to run your recurring spend like a budget, not a leak.</p>
+
+    <div class="feat-grid">
+      <!-- detect (wide) -->
+      <div class="feat wide">
+        <div class="feat-tag">01 · Auto-detect</div>
+        <h3>Catches subscriptions and trials the moment you sign up.</h3>
+        <p>A lightweight content script reads receipts, checkouts, and trial signups across 130+ known patterns. Multi-factor confidence scoring prevents false positives. SPA-aware — it catches in-app navigation on React, Vue, and Angular sites, and retries dynamically-loaded content for up to 7.5 seconds.</p>
+        <div class="services">
+          <span class="chip">Netflix</span>
+          <span class="chip">Spotify</span>
+          <span class="chip">ChatGPT</span>
+          <span class="chip">Adobe CC</span>
+          <span class="chip">Disney+</span>
+          <span class="chip">Notion</span>
+          <span class="chip">Figma</span>
+          <span class="chip">Canva</span>
+          <span class="chip">GitHub</span>
+          <span class="chip">Slack</span>
+          <span class="chip">Zoom</span>
+          <span class="chip">NordVPN</span>
+          <span class="chip">1Password</span>
+          <span class="chip">HBO Max</span>
+          <span class="chip">Hulu</span>
+          <span class="chip mono">+ 100 more</span>
+        </div>
+      </div>
+
+      <!-- alerts -->
+      <div class="feat">
+        <div class="feat-tag">02 · Smart alerts</div>
+        <h3>Nudges, not noise.</h3>
+        <p>Daily background checks alert you exactly when it matters — trial ends, renewals, price hikes, and quiet inactivity.</p>
+        <div class="preview">
+          <div class="alert-list">
+            <div class="alert-item urgent"><span class="dot a"></span> ChatGPT trial ends <span class="countdown">3d</span></div>
+            <div class="alert-item"><span class="dot r"></span> Adobe CC renews — unused 15d <span class="countdown">2d</span></div>
+            <div class="alert-item"><span class="dot g"></span> Spotify · price up $1 <span class="countdown">today</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- cancel -->
+      <div class="feat">
+        <div class="feat-tag">03 · One-click cancel</div>
+        <h3>Skip the maze of settings menus.</h3>
+        <p>Curated cancellation URLs for 50+ popular services. Click the X on any subscription card → land directly on the cancel page → mark cancelled when done.</p>
+        <div class="preview" style="display:flex;align-items:center;justify-content:center;gap:14px;flex-direction:column;min-height:140px">
+          <div style="display:flex;align-items:center;gap:14px;font-family: 'Geist', ui-sans-serif, system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: 0.02em;font-size:13px;color:var(--ink-2);">
+            <span>card</span>
+            <span style="color:var(--sky-deep)">→</span>
+            <span>cancel page</span>
+            <span style="color:var(--sky-deep)">→</span>
+            <span style="color:var(--green)">saved $54.99</span>
+          </div>
+          <div style="font-size:12px;color:var(--ink-3);font-family: 'Geist', ui-sans-serif, system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: 0.02em;">avg time: 6 seconds</div>
+        </div>
+      </div>
+
+      <!-- currency (third width) -->
+      <div class="feat third">
+        <div class="feat-tag">04 · Multi-currency</div>
+        <h3>25+ currencies, one number.</h3>
+        <p>Subscriptions in any currency, converted live to your home currency.</p>
+        <div class="preview">
+          <div class="currency-list">
+            <div class="currency-row"><span class="from">€9.99</span><span class="to">$10.78</span></div>
+            <div class="currency-row"><span class="from">£12.00</span><span class="to">$15.20</span></div>
+            <div class="currency-row"><span class="from">¥1,490</span><span class="to">$9.84</span></div>
+            <div class="currency-row"><span class="from">₹499</span><span class="to">$5.96</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- budget (third width) -->
+      <div class="feat third">
+        <div class="feat-tag">05 · Budget guardrails</div>
+        <h3>Catches you at checkout.</h3>
+        <p>Set a monthly limit. Get warned on the page before you enter your card.</p>
+        <div class="preview">
+          <div class="budget-bar"><div class="budget-fill"></div></div>
+          <div class="budget-row"><span style="color:var(--ink-3)">$92</span><span style="color:var(--amber)">92% of $100</span></div>
+          <div style="margin-top:10px;font-size:12.5px;color:var(--ink-2);background:var(--amber-soft);border:1px solid oklch(0.85 0.1 75);border-radius:8px;padding:8px 10px">⚠︎ Adding this will push you to $127/mo.</div>
+        </div>
+      </div>
+
+      <!-- regional (third width) -->
+      <div class="feat third">
+        <div class="feat-tag">06 · Regional defaults</div>
+        <h3>Works wherever you install.</h3>
+        <p>Auto-detects timezone and sets sensible currency, formats, and date conventions. Zero configuration.</p>
+        <div class="preview" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-family: 'Geist', ui-sans-serif, system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: 0.02em;font-size:12px;">
+          <div style="background:white;border:1px solid var(--line);border-radius:8px;padding:10px;"><div style="color:var(--ink-3)">Mumbai</div><div style="color:var(--sky-deep);margin-top:2px">INR · ₹</div></div>
+          <div style="background:white;border:1px solid var(--line);border-radius:8px;padding:10px;"><div style="color:var(--ink-3)">Berlin</div><div style="color:var(--sky-deep);margin-top:2px">EUR · €</div></div>
+          <div style="background:white;border:1px solid var(--line);border-radius:8px;padding:10px;"><div style="color:var(--ink-3)">Tokyo</div><div style="color:var(--sky-deep);margin-top:2px">JPY · ¥</div></div>
+          <div style="background:white;border:1px solid var(--line);border-radius:8px;padding:10px;"><div style="color:var(--ink-3)">São Paulo</div><div style="color:var(--sky-deep);margin-top:2px">BRL · R$</div></div>
+        </div>
+      </div>
+    </div>
+   </div>
+  </div>
+</section>
+
+<!-- PRIVACY -->
+<section id="privacy">
+  <div class="wrap">
+   <div class="island dark reveal">
+    <div class="privacy-grid">
+      <div>
+        <div class="section-tag">Privacy by design</div>
+        <h2>Your data never leaves your browser.</h2>
+        <p class="section-lead">No cloud database. No analytics pixels. No tracking. The only outbound network call is license validation — and even that works offline for 7 days.</p>
+        <ul>
+          <li>Subscriptions, trials, and savings stored in <span class="mono">chrome.storage.local</span></li>
+          <li>Receipt parser only extracts price, currency, and cycle</li>
+          <li>Never reads card numbers, emails, or addresses</li>
+          <li>Open about what's processed — and what isn't</li>
+        </ul>
+      </div>
+      <div class="privacy-mock">
+        <div><span class="c">// what greedysub reads</span></div>
+        <div><span class="k">price</span>: <span class="s">"$10.99"</span></div>
+        <div><span class="k">currency</span>: <span class="s">"USD"</span></div>
+        <div><span class="k">cycle</span>: <span class="s">"monthly"</span></div>
+        <div><span class="k">next_charge</span>: <span class="s">"2026-05-12"</span></div>
+        <div style="margin-top:14px"><span class="c">// what greedysub never touches</span></div>
+        <div><span class="x">card_number</span>: <span class="c">— ignored</span></div>
+        <div><span class="x">email</span>: <span class="c">— ignored</span></div>
+        <div><span class="x">address</span>: <span class="c">— ignored</span></div>
+        <div><span class="x">browsing_history</span>: <span class="c">— ignored</span></div>
+      </div>
+    </div>
+   </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="wrap">
+   <div class="island reveal">
+    <div class="section-tag">Pricing</div>
+    <h2>Free to try. Pro pays for itself.</h2>
+    <p class="section-lead">Less than the cost of one forgotten Netflix subscription. 30-day free trial included on Pro.</p>
+
+    <div class="pricing-grid">
+      <div class="plan">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">$0<span class="per"> / forever</span></div>
+        <div class="plan-tag">Get started without a card.</div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg> Track up to 5 subscriptions</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg> Manual add &amp; cancel</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg> Basic renewal alerts</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg> Home currency selector</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg> 100% local data storage</li>
+        </ul>
+        <a href="#cta" class="btn btn-ghost">Add free version</a>
+      </div>
+      <div class="plan pro">
+        <div class="ribbon">Popular</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">$5<span class="per"> / mo · or $40 / yr</span></div>
+        <div class="plan-tag">Save $20 with yearly. 30-day free trial.</div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg> Unlimited subscriptions &amp; trials</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg> Auto-detect from receipts &amp; checkout</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg> One-click cancel (50+ services)</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg> Multi-currency dashboard, live rates</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg> Budget alerts at checkout</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg> Price change detection</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg> CSV export</li>
+        </ul>
+        <a href="#cta" class="btn btn-primary">Start 30-day free trial <span class="chev">→</span></a>
+      </div>
+    </div>
+   </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="wrap">
+   <div class="island reveal">
+    <div class="section-tag">FAQ</div>
+    <h2>Quiet answers to fair questions.</h2>
+
+    <div class="faq">
+      <details name="faq">
+        <summary>Is my data really private?</summary>
+        <p>Yes. 100% of your subscription data lives in your browser's local storage. We don't have a server that stores your subscriptions, trials, or browsing history. The only cloud communication is checking if your Pro license is valid.</p>
+      </details>
+      <details name="faq">
+        <summary>How does auto-detection work?</summary>
+        <p>A tiny content script runs on each page you visit. It checks the URL against 130+ known receipt and checkout patterns, scores the page content for subscription keywords, and extracts pricing if confident. Page content never leaves your browser.</p>
+      </details>
+      <details name="faq">
+        <summary>What if a service isn't in your database?</summary>
+        <p>You can add subscriptions manually with the "Add Subscription" button anytime. If auto-detection misses something, the "Detect Subscription" button (Pro) lets you manually scan the current page.</p>
+      </details>
+      <details name="faq">
+        <summary>Does it work with any currency?</summary>
+        <p>GreedySub detects 25+ currencies and converts to your home currency using live exchange rates. USD, EUR, GBP, JPY, INR, PKR, TRY, CAD, AUD, CHF, BRL, KRW, PLN, SEK, AED, SAR, and more.</p>
+      </details>
+      <details name="faq">
+        <summary>Can I export my data?</summary>
+        <p>Pro users can export all subscriptions as a CSV file. Free users can clear all data anytime.</p>
+      </details>
+      <details name="faq">
+        <summary>What's the refund policy?</summary>
+        <p>Pro subscriptions are handled via Polar.sh. Contact support within 14 days for a full refund — no questions asked.</p>
+      </details>
+    </div>
+   </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section id="cta" class="final">
+  <div class="wrap">
+   <div class="island tinted reveal" style="text-align:center; padding: 100px 56px;">
+    <div class="narrow">
+    <h2>Stop letting subscriptions steal from you.</h2>
+    <p>Add GreedySub to Chrome and take back control of your recurring spend — in about 12 seconds.</p>
+    <div class="cta-row">
+      <a href="#" class="btn btn-primary" data-cta-text="">Add to Chrome — Free <span class="chev">→</span></a>
+      <a href="#pricing" class="btn btn-ghost">See plans</a>
+    </div>
+    <div class="hero-meta" style="margin-top:18px">
+      <span class="mono">v1.0</span> · Privacy first · Built for Chrome
+    </div>
+   </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap foot-row">
+    <div class="logo">
+      <span class="logo-mark"></span>
+      <span style="color:var(--ink)">GreedySub</span>
+      <span style="color:var(--ink-3);margin-left:8px;font-size:13px">© 2026</span>
+    </div>
+    <div class="foot-links">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms</a>
+      <a href="mailto:support@greedysub.app">Support</a>
+      <a href="#">Twitter / X</a>
+      <a href="#">Changelog</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  /* ─── premium polish ─── */
+  /* grain texture */
+  body::after {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 1;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.5 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/></svg>");
+    opacity: 0.05; mix-blend-mode: multiply;
+  }
+
+  /* ambient hero glow */
+  .hero-bg::after {
+    content: ""; position: absolute;
+    width: 720px; height: 720px;
+    left: 50%; top: 0;
+    transform: translate(-50%, -40%);
+    background: radial-gradient(circle, oklch(0.78 0.16 235 / 0.35), transparent 60%);
+    filter: blur(40px);
+    animation: drift 14s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+  @keyframes drift {
+    0%   { transform: translate(-50%, -40%) scale(1); }
+    50%  { transform: translate(-46%, -36%) scale(1.05); }
+    100% { transform: translate(-54%, -42%) scale(0.97); }
+  }
+
+  /* kinetic underline on the highlight phrase — removed per spec */
+  h1 em { position: relative; display: inline-block; }
+
+  /* shine sweep on primary CTA */
+  .btn-primary { position: relative; overflow: hidden; }
+  .btn-primary::before {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(115deg, transparent 30%, oklch(1 0 0 / 0.45) 50%, transparent 70%);
+    transform: translateX(-120%);
+    transition: transform .9s cubic-bezier(.2,.8,.2,1);
+  }
+  .btn-primary:hover::before { transform: translateX(120%); }
+
+  /* trust ticker — replaces single hero-meta line */
+  .ticker {
+    margin-top: 28px;
+    display: flex; justify-content: center; gap: 28px;
+    font-family: 'Geist', ui-sans-serif, system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: 0.02em;
+    font-size: 12px; color: var(--ink-3);
+    flex-wrap: wrap;
+  }
+  .ticker span { display: inline-flex; align-items: center; gap: 8px; }
+  .ticker .blip {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 0 0 oklch(0.72 0.14 155 / 0.6);
+    animation: blip 2.6s ease-out infinite;
+  }
+  @keyframes blip {
+    0%, 100% { box-shadow: 0 0 0 0 oklch(0.72 0.14 155 / 0.55); }
+    50%      { box-shadow: 0 0 0 8px oklch(0.72 0.14 155 / 0); }
+  }
+
+  /* marquee logo strip */
+  .strip-wrap { padding: 56px 0 0; position: relative; z-index: 2; overflow: hidden; }
+  .strip-tag {
+    width: 100%; text-align: center;
+    font-family: 'Geist', ui-sans-serif, system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: 0.02em;
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-3); margin-bottom: 18px;
+  }
+  .marquee {
+    display: flex; gap: 14px;
+    width: max-content;
+    animation: marquee 38s linear infinite;
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .marquee:hover { animation-play-state: paused; }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  .marquee .chip {
+    padding: 9px 16px;
+    background: oklch(1 0 0 / 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 13.5px; color: var(--ink-2);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* mock micro-interactions */
+  .browser { transform-origin: 50% 0%; transition: transform .4s cubic-bezier(.2,.8,.2,1); }
+  .sub-row { transition: background .15s ease, transform .15s ease; cursor: default; }
+  .sub-row:hover { background: var(--sky-tint); transform: translateX(3px); }
+
+  /* live "detection" bar that crawls inside the urlbar */
+  .urlbar { position: relative; overflow: hidden; }
+  .urlbar::after {
+    content: "";
+    position: absolute; left: 0; top: 0; bottom: 0; width: 30%;
+    background: linear-gradient(90deg, transparent, oklch(0.78 0.13 235 / 0.18), transparent);
+    animation: crawl 3.6s ease-in-out infinite;
+  }
+  @keyframes crawl {
+    0%   { transform: translateX(-100%); }
+    60%  { transform: translateX(330%); }
+    100% { transform: translateX(330%); }
+  }
+
+  /* status dot pulse on the urgent renewal */
+  .dot.r { animation: pulse 2.2s ease-out infinite; }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 3px oklch(0.65 0.18 25 / 0.18); }
+    50%      { box-shadow: 0 0 0 7px oklch(0.65 0.18 25 / 0); }
+  }
+
+  /* feature cards: hover lift + soft glow */
+  .feat, .step, .plan {
+    transition: transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease, border-color .3s ease;
+    position: relative;
+  }
+  .feat::before, .step::before, .plan::before {
+    content: ""; position: absolute; inset: 0; border-radius: inherit;
+    box-shadow: 0 0 0 0 oklch(0.78 0.13 235 / 0);
+    transition: box-shadow .35s ease;
+    pointer-events: none;
+  }
+  .feat:hover, .step:hover {
+    transform: translateY(-4px);
+    border-color: var(--sky-soft);
+  }
+  .feat:hover::before, .step:hover::before {
+    box-shadow: 0 24px 48px -16px oklch(0.55 0.16 245 / 0.22);
+  }
+  .plan.pro:hover { transform: translateY(-4px); }
+
+  /* step number gets a soft animated ring */
+  .step-icon {
+    position: relative;
+    overflow: visible;
+  }
+  .step:hover .step-icon {
+    background: var(--sky-soft);
+    color: var(--sky-deep);
+    transition: background .3s ease;
+  }
+  .step:hover .step-icon::after {
+    content: ""; position: absolute; inset: -6px; border-radius: 14px;
+    border: 1px dashed var(--sky-soft);
+    animation: spin 6s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* island shimmer accent (top edge) */
+  .island::after {
+    content: ""; position: absolute;
+    top: 0; left: 12%; right: 12%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, oklch(0.78 0.13 235 / 0.6), transparent);
+    pointer-events: none;
+  }
+  .island.dark::after {
+    background: linear-gradient(90deg, transparent, oklch(0.78 0.13 235 / 0.5), transparent);
+  }
+
+  /* privacy section: animated "data stays here" diagram */
+  .privacy-mock { position: relative; overflow: hidden; }
+  .privacy-mock::before {
+    content: ""; position: absolute; right: -40px; top: -40px;
+    width: 160px; height: 160px;
+    background: radial-gradient(circle, oklch(0.78 0.13 235 / 0.18), transparent 70%);
+    filter: blur(20px);
+    animation: drift 10s ease-in-out infinite alternate;
+  }
+
+  /* FAQ smooth open */
+  details { transition: background .2s ease; padding: 18px 12px; margin: 0 -12px; border-radius: 10px; }
+  details:hover { background: oklch(0.5 0.02 240 / 0.025); }
+  details[open] { background: var(--sky-tint); }
+  details[open] summary::after { color: var(--sky-deep); }
+
+  /* footer: subtle */
+  footer { position: relative; z-index: 2; }
+
+  /* magnetic reset (handled in JS) */
+  .magnetic { transition: transform .25s cubic-bezier(.2,.8,.2,1); }
+
+  /* counter monospace consistency */
+  [data-counter] { font-variant-numeric: tabular-nums; }
+
+  /* dark privacy island: list ":" markers, dashes */
+  .island.dark .privacy li::before { color: oklch(0.78 0.13 235); }
+  .island.dark ul { padding-top: 4px; }
+
+  /* ensure z-index above grain */
+  header, section, footer { position: relative; }
+  .nav { z-index: 50; }
+</style>
+
+<script>
+  (function(){
+    // animated counters
+    const easeOut = t => 1 - Math.pow(1 - t, 3);
+    function animateCounter(el){
+      if (el.dataset.done) return;
+      el.dataset.done = '1';
+      const target = parseFloat(el.dataset.target);
+      const prefix = el.dataset.prefix || '';
+      const isInt = Number.isInteger(target);
+      const dur = 1400;
+      const start = performance.now();
+      function tick(now){
+        const t = Math.min(1, (now - start) / dur);
+        const v = target * easeOut(t);
+        el.textContent = prefix + (isInt ? Math.round(v) : v.toFixed(2));
+        if (t < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+    const counters = document.querySelectorAll('[data-counter]');
+    function checkCounters(){
+      const h = window.innerHeight;
+      counters.forEach(el => {
+        if (el.dataset.done) return;
+        const r = el.getBoundingClientRect();
+        if (r.top < h * 0.9 && r.bottom > 0) animateCounter(el);
+      });
+    }
+    requestAnimationFrame(checkCounters);
+    window.addEventListener('scroll', checkCounters, { passive: true });
+
+    // magnetic CTA
+    document.querySelectorAll('.btn-primary, .nav-cta').forEach(btn => {
+      btn.classList.add('magnetic');
+      btn.addEventListener('pointermove', (e) => {
+        const r = btn.getBoundingClientRect();
+        const x = (e.clientX - r.left - r.width / 2) * 0.18;
+        const y = (e.clientY - r.top - r.height / 2) * 0.18;
+        btn.style.transform = `translate(${x}px, ${y}px)`;
+      });
+      btn.addEventListener('pointerleave', () => { btn.style.transform = ''; });
+    });
+
+    // pointer-tilt on hero browser mock
+    const browser = document.querySelector('.browser');
+    const mockWrap = document.querySelector('.mock-wrap');
+    if (browser && mockWrap) {
+      mockWrap.addEventListener('pointermove', (e) => {
+        const r = mockWrap.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        browser.style.transform = `perspective(1400px) rotateX(${ -y * 2.2 }deg) rotateY(${ x * 2.6 }deg)`;
+      });
+      mockWrap.addEventListener('pointerleave', () => { browser.style.transform = ''; });
+    }
+
+    // subtle drift on the toast
+    const toast = document.querySelector('.toast');
+    if (toast) {
+      let t = 0;
+      function loop(){
+        t += 0.012;
+        toast.style.transform = `rotate(${ 2 + Math.sin(t) * 0.8 }deg) translateY(${ Math.sin(t * 0.7) * 4 }px)`;
+        requestAnimationFrame(loop);
+      }
+      // only run if not being driven by scroll
+      // (scroll handler also touches it; whichever wrote last wins per frame, both are subtle)
+    }
+  })();
+</script>
+
+<div id="tweaks-root"></div>
+
+<script>
+  // floating dock nav: scroll behavior
+  (function(){
+    const nav = document.querySelector('.nav');
+    let lastY = 0;
+    let ticking = false;
+    function onScroll(){
+      const y = window.scrollY;
+      if (y > 24) nav.classList.add('scrolled'); else nav.classList.remove('scrolled');
+      // hide on fast downward scroll, show on up
+      if (y > 200 && y > lastY + 4) nav.classList.add('hidden');
+      else if (y < lastY - 4) nav.classList.remove('hidden');
+      lastY = y;
+      ticking = false;
+    }
+    window.addEventListener('scroll', () => {
+      if (!ticking) { requestAnimationFrame(onScroll); ticking = true; }
+    }, { passive: true });
+
+    // scroll reveal — with scroll fallback, never traps content invisible
+    const revealEls = document.querySelectorAll('.reveal');
+    function checkReveal(){
+      const h = window.innerHeight;
+      revealEls.forEach(el => {
+        if (el.classList.contains('in')) return;
+        const r = el.getBoundingClientRect();
+        if (r.top < h * 0.92 && r.bottom > 0) el.classList.add('in');
+      });
+    }
+    // initial pass + safety net
+    requestAnimationFrame(checkReveal);
+    setTimeout(checkReveal, 100);
+    setTimeout(() => { revealEls.forEach(el => el.classList.add('in')); }, 1500);
+    window.addEventListener('scroll', checkReveal, { passive: true });
+    window.addEventListener('resize', checkReveal);
+
+    // step / feature stagger
+    document.querySelectorAll('.steps').forEach(grid => {
+      [...grid.children].forEach((c, i) => { c.classList.add('reveal', 'delay-' + (i + 1)); });
+    });
+    document.querySelectorAll('.feat-grid').forEach(grid => {
+      [...grid.children].forEach((c, i) => { c.classList.add('reveal', 'delay-' + Math.min(i + 1, 4)); });
+    });
+    // re-collect after stagger added
+    const revealEls2 = document.querySelectorAll('.reveal');
+    function checkReveal2(){
+      const h = window.innerHeight;
+      revealEls2.forEach(el => {
+        if (el.classList.contains('in')) return;
+        const r = el.getBoundingClientRect();
+        if (r.top < h * 0.92 && r.bottom > 0) el.classList.add('in');
+      });
+    }
+    requestAnimationFrame(checkReveal2);
+    window.addEventListener('scroll', checkReveal2, { passive: true });
+
+    // hero mock parallax
+    const mock = document.querySelector('.mock-wrap');
+    const toast = document.querySelector('.toast');
+    const heroBg = document.querySelector('.hero-bg');
+    function onParallax(){
+      const y = window.scrollY;
+      if (mock) mock.style.transform = `translateY(${y * -0.06}px) scale(${1 - Math.min(y, 600) * 0.00008})`;
+      if (toast) toast.style.transform = `rotate(${2 - y * 0.005}deg) translateY(${y * -0.04}px)`;
+      if (heroBg) heroBg.style.transform = `translateY(${y * 0.18}px)`;
+    }
+    let pTicking = false;
+    window.addEventListener('scroll', () => {
+      if (!pTicking) { requestAnimationFrame(() => { onParallax(); pTicking = false; }); pTicking = true; }
+    }, { passive: true });
+
+    // step cards staggered reveal — pile reveal classes onto direct children
+    document.querySelectorAll('.steps').forEach(grid => {
+      [...grid.children].forEach((c, i) => { if (!c.classList.contains('reveal')) c.classList.add('reveal', 'delay-' + (i + 1)); });
+    });
+    document.querySelectorAll('.feat-grid').forEach(grid => {
+      [...grid.children].forEach((c, i) => { if (!c.classList.contains('reveal')) c.classList.add('reveal', 'delay-' + Math.min(i + 1, 4)); });
+    });
+  })();
+</script>
+
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel">
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "hue": 235,
+    "chroma": 0.13,
+    "showGrid": true,
+    "cardRadius": 14,
+    "headlineWeight": 500,
+    "bgTone": "cool",
+    "ctaText": "Add to Chrome — It's Free",
+    "heroPill": "Average user saves $40–80 / month"
+  }/*EDITMODE-END*/;
+
+  function hexToOklchHue(deg){ return deg; }
+
+  function App() {
+    const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+    React.useEffect(() => {
+      const r = document.documentElement;
+      const h = t.hue;
+      const c = t.chroma;
+      // primary scale derived from hue + chroma
+      r.style.setProperty('--sky', `oklch(0.72 ${c} ${h})`);
+      r.style.setProperty('--sky-deep', `oklch(0.55 ${Math.min(c + 0.03, 0.2)} ${h + 10})`);
+      r.style.setProperty('--sky-soft', `oklch(0.94 ${c * 0.3} ${h})`);
+      r.style.setProperty('--sky-tint', `oklch(0.97 ${c * 0.15} ${h})`);
+      // background tone
+      const tones = {
+        cool:    { bg: 'oklch(0.985 0.005 230)', bg2: 'oklch(0.975 0.012 230)' },
+        warm:    { bg: 'oklch(0.985 0.005 80)',  bg2: 'oklch(0.975 0.010 80)' },
+        neutral: { bg: 'oklch(0.985 0.002 250)', bg2: 'oklch(0.975 0.004 250)' }
+      };
+      const tone = tones[t.bgTone] || tones.cool;
+      r.style.setProperty('--bg', tone.bg);
+      r.style.setProperty('--bg-2', tone.bg2);
+      // radii
+      r.style.setProperty('--r', t.cardRadius + 'px');
+      r.style.setProperty('--r-lg', (t.cardRadius + 6) + 'px');
+      // headline weight
+      document.querySelectorAll('h1, h2').forEach(el => { el.style.fontWeight = t.headlineWeight; });
+      // grid bg
+      const heroBg = document.querySelector('.hero-bg');
+      if (heroBg) heroBg.style.setProperty('--grid-vis', t.showGrid ? '1' : '0');
+    }, [t]);
+
+    React.useEffect(() => {
+      // CTA text
+      document.querySelectorAll('[data-cta-text]').forEach(el => {
+        el.firstChild.nodeValue = t.ctaText + ' ';
+      });
+      const pill = document.querySelector('[data-hero-pill]');
+      if (pill) pill.lastChild.nodeValue = ' ' + t.heroPill;
+    }, [t.ctaText, t.heroPill]);
+
+    return (
+      <TweaksPanel title="Tweaks">
+        <TweakSection label="Color" />
+        <TweakSlider label="Hue" value={t.hue} min={0} max={360} step={1} unit="°"
+                     onChange={(v) => setTweak('hue', v)} />
+        <TweakSlider label="Saturation" value={t.chroma} min={0} max={0.2} step={0.01}
+                     onChange={(v) => setTweak('chroma', v)} />
+        <TweakRadio label="Background tone" value={t.bgTone}
+                    options={['cool', 'neutral', 'warm']}
+                    onChange={(v) => setTweak('bgTone', v)} />
+
+        <TweakSection label="Shape" />
+        <TweakSlider label="Card radius" value={t.cardRadius} min={4} max={28} step={1} unit="px"
+                     onChange={(v) => setTweak('cardRadius', v)} />
+        <TweakRadio label="Headline weight" value={t.headlineWeight}
+                    options={[400, 500, 600]}
+                    onChange={(v) => setTweak('headlineWeight', v)} />
+        <TweakToggle label="Hero grid lines" value={t.showGrid}
+                     onChange={(v) => setTweak('showGrid', v)} />
+
+        <TweakSection label="Copy" />
+        <TweakText label="Hero pill" value={t.heroPill}
+                   onChange={(v) => setTweak('heroPill', v)} />
+        <TweakText label="Primary CTA" value={t.ctaText}
+                   onChange={(v) => setTweak('ctaText', v)} />
+      </TweaksPanel>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById('tweaks-root')).render(<App />);
+</script>
+</body>
+</html>
