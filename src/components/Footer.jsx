@@ -13,7 +13,7 @@ export default function Footer() {
         <div className="foot-links">
           <Link to="/privacy">Privacy Policy</Link>
           <Link to="/terms">Terms</Link>
-          <a href="mailto:support@greedysub.app">Support</a>
+          <a href="mailto:support@greedysub.com">Support</a>
           <a href="#">Twitter / X</a>
           <a href="#">Changelog</a>
         </div>

@@ -57,7 +57,7 @@ export default function Hero({ ctaText, heroPill }) {
         <div className="browser" ref={browserRef}>
           <div className="browser-bar">
             <div className="traffic"><span></span><span></span><span></span></div>
-            <div className="urlbar">greedysub.app/dashboard</div>
+            <div className="urlbar">greedysub.com/dashboard</div>
             <div className="ext-icon" aria-hidden="true"></div>
           </div>
           <div className="panel">

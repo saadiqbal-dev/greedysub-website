@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 196 48" fill="none">
+  <defs>
+    <linearGradient id="grad" x1="14" y1="2.4" x2="34" y2="45.6" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#52A5DC"/>
+      <stop offset="100%" stop-color="#2B67C8"/>
+    </linearGradient>
+  </defs>
+  <!-- icon mark -->
+  <rect x="0" y="0" width="48" height="48" rx="15" fill="url(#grad)"/>
+  <rect x="0.5" y="0.5" width="47" height="47" rx="14.5" stroke="white" stroke-opacity="0.25" stroke-width="1"/>
+  <circle cx="33" cy="15" r="5.5" fill="white" fill-opacity="0.88"/>
+  <!-- wordmark text -->
+  <text
+    x="62"
+    y="32"
+    font-family="'Geist', 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif"
+    font-size="22"
+    font-weight="600"
+    letter-spacing="-0.44"
+    fill="#1D2433"
+  >GreedySub</text>
+</svg>

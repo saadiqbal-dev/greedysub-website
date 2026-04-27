@@ -142,10 +142,10 @@ export default function TermsOfService() {
             <p style={p}>Pro includes a 30-day free trial. No charge is made during the trial period. If you do not cancel before the trial ends, your payment method will be charged for the first billing period.</p>
 
             <h3 style={h3}>5.3 Cancellation</h3>
-            <p style={p}>You may cancel your Pro subscription at any time through your Polar.sh account dashboard or by contacting <a href="mailto:support@greedysub.app" style={{ color: 'var(--sky-deep)' }}>support@greedysub.app</a>. Cancellation takes effect at the end of the current billing period. You will retain Pro access until that date.</p>
+            <p style={p}>You may cancel your Pro subscription at any time through your Polar.sh account dashboard or by contacting <a href="mailto:support@greedysub.com" style={{ color: 'var(--sky-deep)' }}>support@greedysub.com</a>. Cancellation takes effect at the end of the current billing period. You will retain Pro access until that date.</p>
 
             <h3 style={h3}>5.4 Refund Policy</h3>
-            <p style={p}>You may request a full refund within <strong>14 days</strong> of the initial charge by emailing <a href="mailto:support@greedysub.app" style={{ color: 'var(--sky-deep)' }}>support@greedysub.app</a> with your order reference. We will instruct Polar.sh to process the refund on your behalf. <strong>All payment processing and refund execution is carried out solely by Polar.sh</strong> — GreedySub does not collect, hold, or transfer any payment funds at any time. Refund timing (typically 5–10 business days) is determined by Polar.sh and your card issuer, not by us. Refunds are not available for charges made after the 14-day window or for partial billing periods following voluntary downgrade.</p>
+            <p style={p}>You may request a full refund within <strong>14 days</strong> of the initial charge by emailing <a href="mailto:support@greedysub.com" style={{ color: 'var(--sky-deep)' }}>support@greedysub.com</a> with your order reference. We will instruct Polar.sh to process the refund on your behalf. <strong>All payment processing and refund execution is carried out solely by Polar.sh</strong> — GreedySub does not collect, hold, or transfer any payment funds at any time. Refund timing (typically 5–10 business days) is determined by Polar.sh and your card issuer, not by us. Refunds are not available for charges made after the 14-day window or for partial billing periods following voluntary downgrade.</p>
 
             <h3 style={h3}>5.5 License Keys</h3>
             <p style={{ ...p, marginBottom: 0 }}>Pro access is tied to a license key issued by Polar.sh. License keys are personal and non-transferable. Sharing a license key constitutes a material breach of these Terms and may result in immediate revocation without refund.</p>
@@ -254,8 +254,8 @@ export default function TermsOfService() {
           <LegalSection num="16" title="Contact Us">
             <p style={p}>For any questions about these Terms:</p>
             <Ul items={[
-              '<strong>Email:</strong> <a href="mailto:legal@greedysub.app" style="color:var(--sky-deep)">legal@greedysub.app</a>',
-              '<strong>Support:</strong> <a href="mailto:support@greedysub.app" style="color:var(--sky-deep)">support@greedysub.app</a>',
+              '<strong>Email:</strong> <a href="mailto:legal@greedysub.com" style="color:var(--sky-deep)">legal@greedysub.com</a>',
+              '<strong>Support:</strong> <a href="mailto:support@greedysub.com" style="color:var(--sky-deep)">support@greedysub.com</a>',
             ]} />
             <p style={{ ...p, marginBottom: 0 }}>We aim to respond to all inquiries within 5 business days.</p>
           </LegalSection>
