@@ -129,7 +129,7 @@ export default function PrivacyPolicy() {
 
           <LegalSection num="1" title="Who We Are">
             <p style={p}>GreedySub ("we," "our," or "us") is a subscription tracking browser extension available on the Google Chrome Web Store. This Privacy Policy explains how we collect, use, and protect information when you use the GreedySub extension and website (collectively, the "Service").</p>
-            <p style={{ ...p, marginBottom: 0 }}>For privacy-related questions, contact us at: <a href="mailto:privacy@greedysub.com" style={{ color: 'var(--sky-deep)' }}>privacy@greedysub.com</a></p>
+            <p style={{ ...p, marginBottom: 0 }}>For privacy-related questions, contact us at: <a href="mailto:saad@sloppydev.com" style={{ color: 'var(--sky-deep)' }}>saad@sloppydev.com</a></p>
           </LegalSection>
 
           <LegalSection num="2" title="Information We Collect">
@@ -230,10 +230,10 @@ export default function PrivacyPolicy() {
             ]} />
 
             <h3 style={h3}>7.2 GDPR (EEA, UK, and Switzerland)</h3>
-            <p style={p}>If you are located in the EEA, UK, or Switzerland, you have additional rights under GDPR: access, rectification, erasure ("right to be forgotten"), restriction of processing, data portability, and the right to object. Contact <a href="mailto:privacy@greedysub.com" style={{ color: 'var(--sky-deep)' }}>privacy@greedysub.com</a> to exercise these rights. Our legal basis for processing license validation data is performance of contract (Article 6(1)(b) GDPR).</p>
+            <p style={p}>If you are located in the EEA, UK, or Switzerland, you have additional rights under GDPR: access, rectification, erasure ("right to be forgotten"), restriction of processing, data portability, and the right to object. Contact <a href="mailto:saad@sloppydev.com" style={{ color: 'var(--sky-deep)' }}>saad@sloppydev.com</a> to exercise these rights. Our legal basis for processing license validation data is performance of contract (Article 6(1)(b) GDPR).</p>
 
             <h3 style={h3}>7.3 CCPA (California Residents)</h3>
-            <p style={{ ...p, marginBottom: 0 }}>California residents have the right to know what personal information we collect, the right to deletion, the right to opt out of sale (we do not sell personal information), and the right to non-discrimination. Contact <a href="mailto:privacy@greedysub.com" style={{ color: 'var(--sky-deep)' }}>privacy@greedysub.com</a> to submit a request.</p>
+            <p style={{ ...p, marginBottom: 0 }}>California residents have the right to know what personal information we collect, the right to deletion, the right to opt out of sale (we do not sell personal information), and the right to non-discrimination. Contact <a href="mailto:saad@sloppydev.com" style={{ color: 'var(--sky-deep)' }}>saad@sloppydev.com</a> to submit a request.</p>
           </LegalSection>
 
           <LegalSection num="8" title="Data Security">
@@ -243,7 +243,7 @@ export default function PrivacyPolicy() {
           </LegalSection>
 
           <LegalSection num="9" title="Children's Privacy">
-            <p style={{ ...p, marginBottom: 0 }}>GreedySub is not directed to children under 13 (or 16 in the EEA). We do not knowingly collect personal information from children. If you believe a child has provided us with personal information, contact <a href="mailto:privacy@greedysub.com" style={{ color: 'var(--sky-deep)' }}>privacy@greedysub.com</a> and we will delete it.</p>
+            <p style={{ ...p, marginBottom: 0 }}>GreedySub is not directed to children under 13 (or 16 in the EEA). We do not knowingly collect personal information from children. If you believe a child has provided us with personal information, contact <a href="mailto:saad@sloppydev.com" style={{ color: 'var(--sky-deep)' }}>saad@sloppydev.com</a> and we will delete it.</p>
           </LegalSection>
 
           <LegalSection num="10" title="Cookies">
@@ -269,8 +269,8 @@ export default function PrivacyPolicy() {
           <LegalSection num="13" title="Contact Us">
             <p style={p}>For any questions or requests regarding this Privacy Policy:</p>
             <Ul items={[
-              '<strong>Email:</strong> <a href="mailto:privacy@greedysub.com" style="color:var(--sky-deep)">privacy@greedysub.com</a>',
-              '<strong>Support:</strong> <a href="mailto:support@greedysub.com" style="color:var(--sky-deep)">support@greedysub.com</a>',
+              '<strong>Email:</strong> <a href="mailto:saad@sloppydev.com" style="color:var(--sky-deep)">saad@sloppydev.com</a>',
+              '<strong>Support:</strong> <a href="mailto:saad@sloppydev.com" style="color:var(--sky-deep)">saad@sloppydev.com</a>',
             ]} />
             <p style={{ ...p, marginBottom: 0 }}>We will respond to all privacy-related requests within 30 days.</p>
           </LegalSection>
