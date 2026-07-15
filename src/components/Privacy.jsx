@@ -1,5 +1,6 @@
 import React from 'react';
 import StructuredData from './StructuredData';
+import { GITHUB_URL } from '../config';
 
 export default function Privacy() {
   const privacySchema = {
@@ -23,12 +24,12 @@ export default function Privacy() {
             <div>
               <div className="section-tag">Privacy by design</div>
               <h2 id="privacy-heading">Your data never leaves your browser.</h2>
-              <p className="section-lead">No cloud database. No analytics pixels. No tracking. The only outbound network call is license validation — and even that works offline for 7 days.</p>
+              <p className="section-lead">No cloud database. No analytics pixels. No tracking. Subscription data stays local; only anonymous exchange-rate requests leave the extension.</p>
               <ul>
                 <li>Subscriptions, trials, and savings stored in <span className="mono">chrome.storage.local</span></li>
                 <li>Receipt parser only extracts price, currency, and cycle</li>
                 <li>Never reads card numbers, emails, or addresses</li>
-                <li>Open about what's processed — and what isn't</li>
+                <li><a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">Open source</a> so the data flow can be independently inspected</li>
               </ul>
             </div>
             <div className="privacy-mock" aria-label="Data handling diagram">

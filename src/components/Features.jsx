@@ -26,7 +26,7 @@ export default function Features() {
       {
         '@type': 'ListItem',
         position: 3,
-        name: 'One-click cancel',
+        name: 'Cancellation deep links',
         description: 'Curated cancellation URLs for 50+ popular services. Click the X on any subscription card to land directly on the cancel page.',
       },
       {
@@ -85,10 +85,10 @@ export default function Features() {
             </div>
 
             <div className="feat reveal delay-2">
-              <div className="feat-tag">03 · One-click cancel</div>
+              <div className="feat-tag">03 · Cancellation links</div>
               <h3>Skip the maze of settings menus.</h3>
               <p>Curated cancellation URLs for 50+ popular services. Click the X on any subscription card → land directly on the cancel page → mark cancelled when done.</p>
-              <div className="preview" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 14, flexDirection: 'column', minHeight: 140 }} aria-label="One-click cancel flow">
+              <div className="preview" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 14, flexDirection: 'column', minHeight: 140 }} aria-label="Cancellation link flow">
                 <div style={{ display: 'flex', alignItems: 'center', gap: 14, fontFamily: "'Geist', ui-sans-serif, system-ui, sans-serif", fontVariantNumeric: 'tabular-nums', letterSpacing: '0.02em', fontSize: 13, color: 'var(--ink-2)' }}>
                   <span>card</span>
                   <span style={{ color: 'var(--sky-deep)' }}>→</span>
@@ -96,7 +96,7 @@ export default function Features() {
                   <span style={{ color: 'var(--sky-deep)' }}>→</span>
                   <span style={{ color: 'var(--green)' }}>saved $54.99</span>
                 </div>
-                <div style={{ fontSize: 12, color: 'var(--ink-3)', fontFamily: "'Geist', ui-sans-serif, system-ui, sans-serif", fontVariantNumeric: 'tabular-nums', letterSpacing: '0.02em' }}>avg time: 6 seconds</div>
+                <div style={{ fontSize: 12, color: 'var(--ink-3)', fontFamily: "'Geist', ui-sans-serif, system-ui, sans-serif", fontVariantNumeric: 'tabular-nums', letterSpacing: '0.02em' }}>Complete cancellation on the provider’s site</div>
               </div>
             </div>
 
