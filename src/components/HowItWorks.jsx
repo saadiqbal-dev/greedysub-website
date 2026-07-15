@@ -34,8 +34,8 @@ const steps = [
   },
   {
     num: '04 / CANCEL',
-    title: 'In one click',
-    text: 'No more digging through 5 layers of menus. GreedySub has direct cancel links for 50+ services. Click, done, money saved.',
+    title: 'Without the maze',
+    text: 'Open a direct cancellation page for supported services, finish the provider’s steps, then mark the subscription cancelled.',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M5 12h14M13 5l7 7-7 7"/>
@@ -71,7 +71,7 @@ export default function HowItWorks() {
         <div className="island reveal">
           <div className="section-tag">How it works</div>
           <h2 id="how-heading">Four quiet steps. Zero spreadsheets.</h2>
-          <p className="section-lead">GreedySub lives in your browser. It watches for subscription moments, organizes them on a clean dashboard, warns you before charges, and cancels in a click.</p>
+          <p className="section-lead">GreedySub lives in your browser. It watches for subscription moments, organizes them on a clean dashboard, warns you before charges, and opens the right cancellation page.</p>
 
           <ol className="steps">
             {steps.map((s, i) => (

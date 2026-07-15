@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import StructuredData from './StructuredData';
+import { GITHUB_URL } from '../config';
 
 export default function Hero({ ctaText, heroPill }) {
   const mockWrapRef = useRef(null);
@@ -53,10 +54,10 @@ export default function Hero({ ctaText, heroPill }) {
           </span>
           <h1>The subscription tracker that <em>actually saves you money.</em></h1>
           <p className="lead">
-            GreedySub spots subscriptions and free trials the moment you sign up, warns you before they charge, and helps you cancel in one click. All your data stays private — right in your browser.
+            GreedySub spots subscriptions and free trials, warns you before they charge, and opens direct cancellation pages. Free, open source, and local-first.
           </p>
           <div className="cta-row">
-            <a href="#cta" className="btn btn-primary" aria-label="Add GreedySub to Chrome for free">
+            <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="btn btn-primary" aria-label="View GreedySub source code on GitHub">
               {ctaText} <span className="chev" aria-hidden="true">→</span>
             </a>
             <a href="#how" className="btn btn-ghost" aria-label="Learn how GreedySub works">See how it works</a>
@@ -64,6 +65,8 @@ export default function Hero({ ctaText, heroPill }) {
           <div className="ticker" aria-label="Product highlights">
             <span><span className="blip" aria-hidden="true"></span> Live · v1.0</span>
             <span>No account required</span>
+            <span>Free forever</span>
+            <span>Open source</span>
             <span>Works offline</span>
             <span className="mono">100% local data</span>
           </div>

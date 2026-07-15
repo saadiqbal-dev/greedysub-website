@@ -41,6 +41,24 @@ body {
 .wrap { max-width: 1120px; margin: 0 auto; padding: 0 28px; }
 .narrow { max-width: 760px; margin: 0 auto; padding: 0 28px; }
 
+/* legal pages */
+.legal-header { padding: 120px 0 48px; text-align: center; }
+.legal-header h1 { font-size: clamp(32px, 5vw, 52px); line-height: 1.08; letter-spacing: -0.03em; font-weight: 500; margin: 0 auto 16px; max-width: 22ch; }
+.legal-header .wrap > p { color: var(--ink-3); font-size: 14px; margin: 0; }
+.legal-breadcrumb { margin-bottom: 20px; font-size: 13px; color: var(--ink-3); }
+.legal-breadcrumb ol { list-style: none; padding: 0; margin: 0; display: flex; justify-content: center; gap: 8px; }
+.legal-breadcrumb a { color: var(--ink-3); text-decoration: none; }
+.legal-breadcrumb a:hover { color: var(--ink); }
+.legal-label { display: inline-block; font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sky-deep); background: var(--sky-soft); padding: 4px 12px; border-radius: 999px; margin-bottom: 20px; }
+.legal-main { padding-bottom: 100px; }
+.legal-summary { background: var(--sky-tint); border: 1px solid var(--sky-soft); border-radius: var(--r); padding: 16px 20px; margin-bottom: 16px; }
+.legal-summary p { font-size: 14px; color: var(--ink-2); margin: 0; }
+.legal-summary strong { color: var(--ink); }
+.legal-card { background: oklch(1 0 0 / 0.9); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 40px 44px; margin-bottom: 16px; box-shadow: var(--shadow-sm); }
+.legal-card a { color: var(--sky-deep); }
+.legal-card-title { font-size: 19px; font-weight: 600; letter-spacing: -0.02em; margin: 0 0 16px; color: var(--ink); display: flex; align-items: center; gap: 10px; }
+.legal-section-number { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 8px; background: var(--sky-soft); color: var(--sky-deep); font-size: 12px; font-weight: 600; flex-shrink: 0; }
+
 /* floating dock nav */
 .nav {
   position: fixed;
@@ -588,49 +606,16 @@ h2 {
 .privacy li { padding: 10px 0; border-top: 1px dashed var(--line-2); display: flex; gap: 12px; font-size: 14.5px; color: var(--ink-2); }
 .privacy li::before { content: "›"; color: var(--sky); font-family: 'Geist', ui-sans-serif, system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
 
-/* pricing */
-.pricing-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-top: 56px;
-}
-.plan {
-  background: white;
-  border: 1px solid var(--line);
-  border-radius: var(--r-lg);
-  padding: 36px;
-  position: relative;
-}
-.plan.pro {
-  background: linear-gradient(180deg, white 0%, var(--sky-tint) 100%);
+/* open source */
+.open-source-island {
+  background: linear-gradient(145deg, white 0%, var(--sky-tint) 100%);
   border-color: var(--sky-soft);
-  box-shadow: var(--shadow-md);
 }
-.plan-name { font-size: 14px; font-family: 'Geist', ui-sans-serif, system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.06em; }
-.plan-price { font-size: 56px; font-weight: 400; letter-spacing: -0.04em; line-height: 1; margin: 14px 0 4px; }
-.plan-price .per { font-size: 16px; color: var(--ink-3); font-weight: 400; letter-spacing: 0; }
-.plan-tag { font-size: 14px; color: var(--ink-3); margin-bottom: 24px; }
-.plan ul { list-style: none; padding: 0; margin: 0 0 28px; }
-.plan li {
-  padding: 9px 0;
-  border-top: 1px solid var(--line);
-  font-size: 14.5px;
-  display: flex; align-items: center; gap: 10px;
-  color: var(--ink-2);
-}
-.plan li:first-child { border-top: none; padding-top: 0; }
-.plan li svg { width: 14px; height: 14px; flex-shrink: 0; color: var(--sky-deep); }
-.plan .btn { width: 100%; justify-content: center; }
-.ribbon {
-  position: absolute; top: 28px; right: 28px;
-  font-family: 'Geist', ui-sans-serif, system-ui, sans-serif; font-variant-numeric: tabular-nums; letter-spacing: 0.02em;
-  white-space: nowrap;
-  font-size: 11px; letter-spacing: 0.08em;
-  text-transform: uppercase;
-  background: var(--sky-deep); color: white;
-  padding: 4px 10px; border-radius: 6px;
-}
+.open-source-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 64px; align-items: center; }
+.source-points { list-style: none; padding: 0; margin: 0; border: 1px solid var(--line); border-radius: var(--r-lg); background: white; box-shadow: var(--shadow-sm); }
+.source-points li { position: relative; padding: 14px 18px 14px 46px; border-top: 1px solid var(--line); color: var(--ink-2); font-size: 14.5px; }
+.source-points li:first-child { border-top: 0; }
+.source-points li::before { content: "✓"; position: absolute; left: 18px; color: var(--green); font-weight: 700; }
 
 /* faq — single column for readability */
 .faq { display: grid; grid-template-columns: 1fr; gap: 0; margin-top: 48px; max-width: 760px; margin-left: auto; margin-right: auto; }
@@ -774,7 +759,6 @@ body::after {
 .feat:hover::before, .step:hover::before {
   box-shadow: 0 24px 48px -16px oklch(0.55 0.16 245 / 0.22);
 }
-.plan.pro:hover { transform: translateY(-4px); }
 
 .step-icon {
   position: relative;
@@ -927,11 +911,7 @@ header, section, footer { position: relative; }
   .feat-grid { grid-template-columns: 1fr; gap: 14px; margin-top: 36px; }
   .feat, .feat.wide, .feat.third { grid-column: span 1; padding: 24px; }
   .feat h3 { font-size: 19px; }
-  .pricing-grid { grid-template-columns: 1fr; gap: 14px; margin-top: 36px; }
-  .plan { padding: 28px 24px; }
-  .plan.pro { order: -1; }
-  .plan-price { font-size: 36px; }
-  .ribbon { top: 20px; right: 20px; }
+  .open-source-grid { grid-template-columns: 1fr; gap: 32px; }
   .faq { margin-top: 32px; }
   details { padding: 16px 12px; }
   details summary { font-size: 16px; }
@@ -963,7 +943,8 @@ header, section, footer { position: relative; }
   .stat-card { padding: 24px 20px; }
   .step { padding: 20px; }
   .feat, .feat.wide, .feat.third { padding: 22px 20px; }
-  .plan { padding: 24px 20px; }
+  .legal-header { padding: 96px 0 36px; }
+  .legal-card { padding: 26px 22px; }
   .preview { padding: 14px !important; }
   .alert-item { font-size: 12px; padding: 8px 10px; }
   .currency-row { font-size: 11px; padding: 6px 9px; }

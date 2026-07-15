@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { GITHUB_URL } from '../config';
 
 export default function Footer() {
   return (
@@ -14,6 +15,7 @@ export default function Footer() {
           <div className="foot-links">
             <Link to="/privacy">Privacy Policy</Link>
             <Link to="/terms">Terms</Link>
+            <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">GitHub</a>
             <a href="mailto:saad@sloppydev.com">Support</a>
           </div>
         </nav>

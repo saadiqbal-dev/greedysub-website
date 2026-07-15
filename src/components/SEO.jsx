@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 
 const defaultMeta = {
-  title: 'GreedySub — Subscription Tracker & Trial Reminder for Chrome',
-  description: 'Spot subscriptions and free trials the moment you sign up, get warned before they charge, and cancel in one click. All your data stays private — right in your browser.',
+  title: 'GreedySub — Free & Open-Source Subscription Tracker',
+  description: 'Track subscriptions and free trials, get renewal reminders, and open direct cancellation pages. Free, open source, and local-first for Chrome.',
   canonical: 'https://greedysub.com/',
-  ogImage: 'https://greedysub.com/og-image.png',
+  ogImage: '',
   ogType: 'website',
 };
 
@@ -39,10 +39,15 @@ export default function SEO({
     setMeta('meta[property="og:description"]', description);
     setMeta('meta[property="og:url"]', canonical);
     setMeta('meta[property="og:type"]', ogType);
-    setMeta('meta[property="og:image"]', ogImage);
     setMeta('meta[name="twitter:title"]', fullTitle);
     setMeta('meta[name="twitter:description"]', description);
-    setMeta('meta[name="twitter:image"]', ogImage);
+    if (ogImage) {
+      setMeta('meta[property="og:image"]', ogImage);
+      setMeta('meta[name="twitter:image"]', ogImage);
+    } else {
+      document.querySelector('meta[property="og:image"]')?.remove();
+      document.querySelector('meta[name="twitter:image"]')?.remove();
+    }
 
     if (keywords) {
       setMeta('meta[name="keywords"]', keywords);
@@ -69,10 +74,10 @@ export default function SEO({
       setMeta('meta[property="og:description"]', defaultMeta.description);
       setMeta('meta[property="og:url"]', defaultMeta.canonical);
       setMeta('meta[property="og:type"]', defaultMeta.ogType);
-      setMeta('meta[property="og:image"]', defaultMeta.ogImage);
       setMeta('meta[name="twitter:title"]', defaultMeta.title);
       setMeta('meta[name="twitter:description"]', defaultMeta.description);
-      setMeta('meta[name="twitter:image"]', defaultMeta.ogImage);
+      document.querySelector('meta[property="og:image"]')?.remove();
+      document.querySelector('meta[name="twitter:image"]')?.remove();
       setMeta('meta[name="robots"]', 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1');
       if (canonicalEl) canonicalEl.setAttribute('href', defaultMeta.canonical);
     };

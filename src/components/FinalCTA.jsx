@@ -1,5 +1,6 @@
 import React from 'react';
 import StructuredData from './StructuredData';
+import { GITHUB_URL } from '../config';
 
 export default function FinalCTA({ ctaText }) {
   const ctaSchema = {
@@ -18,13 +19,13 @@ export default function FinalCTA({ ctaText }) {
             <h2 id="cta-heading">Stop letting subscriptions steal from you.</h2>
             <p>Add GreedySub to Chrome and take back control of your recurring spend — in about 12 seconds.</p>
             <div className="cta-row">
-              <a href="#" className="btn btn-primary" aria-label="Add GreedySub to Chrome for free">
+              <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="btn btn-primary" aria-label="View GreedySub source code on GitHub">
                 {ctaText} <span className="chev" aria-hidden="true">→</span>
               </a>
-              <a href="#pricing" className="btn btn-ghost" aria-label="View GreedySub pricing plans">See plans</a>
+              <a href="#features" className="btn btn-ghost" aria-label="Explore GreedySub features">Explore features</a>
             </div>
             <div className="hero-meta" style={{ marginTop: 18 }}>
-              <span className="mono">v1.0</span> · Privacy first · Built for Chrome
+              <span className="mono">v1.0</span> · Free forever · Open source · Built for Chrome
             </div>
           </div>
         </div>

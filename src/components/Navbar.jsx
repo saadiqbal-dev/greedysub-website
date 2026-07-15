@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { GITHUB_URL } from '../config';
 
 export default function Navbar({ legalPage = false }) {
   const [scrolled, setScrolled] = useState(false);
@@ -39,16 +40,16 @@ export default function Navbar({ legalPage = false }) {
         {legalPage ? (
           <div className="nav-links">
             <Link to="/" style={{ color: 'var(--ink-2)', textDecoration: 'none', fontSize: 13.5, padding: '7px 12px', borderRadius: 999 }}>← Back to home</Link>
-            <a href="/#cta" className="nav-cta">Add to Chrome</a>
+            <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="nav-cta">GitHub</a>
           </div>
         ) : (
           <div className="nav-links">
             <a href="#how">How it works</a>
             <a href="#features">Features</a>
             <a href="#privacy">Privacy</a>
-            <a href="#pricing">Pricing</a>
+            <a href="#open-source">Open source</a>
             <a href="#faq">FAQ</a>
-            <a href="#cta" className="nav-cta">Add to Chrome</a>
+            <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="nav-cta">GitHub</a>
           </div>
         )}
       </div>

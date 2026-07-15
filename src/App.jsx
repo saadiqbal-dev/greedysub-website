@@ -6,7 +6,7 @@ import ProblemSection from './components/ProblemSection';
 import HowItWorks from './components/HowItWorks';
 import Features from './components/Features';
 import Privacy from './components/Privacy';
-import Pricing from './components/Pricing';
+import OpenSource from './components/OpenSource';
 import FAQ from './components/FAQ';
 import FinalCTA from './components/FinalCTA';
 import Footer from './components/Footer';
@@ -25,8 +25,8 @@ const TWEAK_DEFAULTS = {
   cardRadius: 14,
   headlineWeight: 500,
   bgTone: 'cool',
-  ctaText: "Add to Chrome — It's Free",
-  heroPill: 'Average user saves $40–80 / month',
+  ctaText: 'View source on GitHub',
+  heroPill: 'Free forever · open source · local-first',
 };
 
 function HomePage() {
@@ -68,8 +68,8 @@ function HomePage() {
   return (
     <>
       <SEO
-        title="Subscription Tracker & Trial Reminder for Chrome"
-        description="Spot subscriptions and free trials the moment you sign up, get warned before they charge, and cancel in one click. All your data stays private — right in your browser."
+        title="Free, Open-Source Subscription Tracker for Chrome"
+        description="Track subscriptions and free trials, get renewal alerts, and manage recurring spend with a free, open-source, local-first Chrome extension."
         canonical="https://greedysub.com/"
         keywords="subscription tracker, trial reminder, cancel subscriptions, save money, Chrome extension, budget tracker, recurring payments, subscription manager, free trial tracker"
       />
@@ -80,7 +80,7 @@ function HomePage() {
         <HowItWorks />
         <Features />
         <Privacy />
-        <Pricing />
+        <OpenSource />
         <FAQ />
         <FinalCTA ctaText={TWEAK_DEFAULTS.ctaText} />
       </main>
